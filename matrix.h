@@ -26,12 +26,12 @@ class Matrix{
     Matrix(std::vector<std::vector<double>>& inputData);
     // Instanciates a Matrix from a two dimension vector of double
 
-    Matrix(int numberOfRows, int numberOfCols);
-    // Instanciates a Matrix with random numbers
+    Matrix(int numberOfRows,int numberOfCols);
+    // Instanciates a Matrix with random positive numbers
 
-    Matrix(int numberOfRows, int numberOfCols, double minLimit, double maxLimit);
-    // Instanciates a Matrix with random numbers between the
-    // arguments minLimit and maxLimit
+    Matrix(int numberOfRows,int numberOfCols, double minLimit, double maxLimit);
+    // Instanciates a Matrix with random positive numbers 
+    // between the arguments minLimit and maxLimit
 
     // Public methods
     unsigned int Rows();
@@ -43,7 +43,6 @@ class Matrix{
     virtual double Determinant();
     // Return the Matrix's determinant
 
-
     void ShowContent();
 };
 
@@ -51,12 +50,12 @@ class IdentityMatrix : public Matrix{
   public:
 
     // Protected constructors
-    IdentityMatrix(unsigned int Order);
+    IdentityMatrix(int Order);
     // Instanciates a identity Matrix with order specified by the variable Order
 
     // Protected methods
     void DefineDeterminant() override;
-    // Optimizes the definition of the determinant
+    // Optimizes the determinant's definition
 };
 
 

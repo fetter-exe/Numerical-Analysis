@@ -14,7 +14,10 @@
         DefineDeterminant();
     }
 
-    Matrix::Matrix(int numberOfRows, int numberOfCols){
+    Matrix::Matrix(int numberOfRows,int numberOfCols){
+        if(numberOfRows < 0 || numberOfCols < 0){
+            throw std::invalid_argument("negative arguments are not allowed");
+        }
         rows = numberOfRows;
         cols = numberOfCols;
         data.resize(rows);
@@ -27,7 +30,10 @@
         DefineDeterminant();
     }
 
-    Matrix::Matrix(int numberOfRows, int numberOfCols, double minLimit, double maxLimit){
+    Matrix::Matrix(int numberOfRows,int numberOfCols, double minLimit, double maxLimit){
+        if(numberOfRows < 0 || numberOfCols < 0){
+            throw std::invalid_argument("negative arguments are not allowed");
+        }
         rows = numberOfRows;
         cols = numberOfCols;
         data.resize(rows);
@@ -60,20 +66,23 @@
         }
     }
 
-    void DefineDeterminant(){
+    void Matrix::DefineDeterminant(){
     // --------> Still needs implementation <--------  
     }
 
     // IdentityMatrix implementation
 
-    IdentityMatrix::IdentityMatrix(unsigned int Order): Matrix(){
+    IdentityMatrix::IdentityMatrix(int Order): Matrix(){
+        if(Order< 0){
+            throw std::invalid_argument("negative arguments are not allowed");
+        }
         this->rows = Order;
         this->cols = Order;
         data.resize(rows);
         for(unsigned int i=0; i<rows; ++i){
             data[i].resize(cols);
         }
-        for(unsigned int i=0; i<Order; ++i){
+        for(unsigned int i=0; i<rows; ++i){
             data[i][i] =  1.0;
         }
         DefineDeterminant();
