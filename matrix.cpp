@@ -1,6 +1,7 @@
 #include "matrix.h"
 #include <stdlib.h>  // srand(); frand();
-#include <time.h>    // time
+#include <time.h>    // time;
+#include <memory>    // shared_ptr
 
     Matrix::Matrix(){}
 
@@ -56,16 +57,42 @@
         DefineDeterminant();
     }
 
-    unsigned int Matrix::Rows(){
+    unsigned int Matrix::Rows() const{
         return this->rows;
     }
 
-    unsigned int Matrix::Cols(){
+    unsigned int Matrix::Cols() const{
         return this->cols;
     }
 
-    double Matrix::Determinant(){
+    double Matrix::Determinant() const{
         return this->determinant;
+    }
+
+    Matrix Matrix::operator+(const Matrix& other) const{
+        if(this->rows != other.rows || this->cols != other.cols){
+            throw std::length_error("dimension mismatch"); // Checks for a required condition
+        }
+        std::shared_ptr<Matrix> returnedMatrix(new Matrix(this->rows, this->cols));
+        for(unsigned int i=0; i<returnedMatrix->rows; ++i){ // Fills the Matrix
+           for(unsigned int j=0; j<returnedMatrix->cols; ++j){
+               returnedMatrix->data[i][j] = this->data[i][j] + other.data[i][j];
+           } 
+        }
+        return *returnedMatrix;
+    }
+
+    Matrix Matrix::operator-(const Matrix& other) const{
+        if(this->rows != other.rows || this->cols != other.cols){
+            throw std::length_error("dimension mismatch"); // Checks for a required condition
+        }
+        std::shared_ptr<Matrix> returnedMatrix(new Matrix(this->rows, this->cols));
+        for(unsigned int i=0; i<returnedMatrix->rows; ++i){ // Fills the Matrix
+           for(unsigned int j=0; j<returnedMatrix->cols; ++j){
+               returnedMatrix->data[i][j] = this->data[i][j] - other.data[i][j];
+           } 
+        }
+        return *returnedMatrix;
     }
 
     void Matrix::ShowContent(){

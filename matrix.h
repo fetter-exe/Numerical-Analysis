@@ -37,14 +37,20 @@ class Matrix{
     // between the arguments minLimit and maxLimit
 
     // Public methods
-    unsigned int Rows();
+    unsigned int Rows() const;
     // Return the number of rows
 
-    unsigned int Cols();
+    unsigned int Cols() const;
     // Return the number of cols
 
-    virtual double Determinant();
+    virtual double Determinant() const;
     // Return the Matrix's determinant
+
+    virtual Matrix operator+(const Matrix& other) const;
+    // Return the result of a addition matrix operation
+
+    virtual Matrix operator-(const Matrix& other) const;
+    // Return the result of a subtraction matrix operation
 
     void ShowContent();
 };
