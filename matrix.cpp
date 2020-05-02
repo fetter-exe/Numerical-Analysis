@@ -95,6 +95,23 @@
         return *returnedMatrix;
     }
 
+    Matrix Matrix::operator*(const Matrix& other) const{
+        if(this->cols != other.rows){
+            throw std::length_error("dimension mismatch"); // Checks for a required condition
+        }
+        std::shared_ptr<Matrix> returnedMatrix(new Matrix(this->rows, other.cols));
+        for(unsigned int i=0; i<returnedMatrix->rows; ++i){ // Fills the Matrix
+           for(unsigned int j=0; j<returnedMatrix->cols; ++j){
+               double Summation = 0.0;
+               for(unsigned int X=0; X<returnedMatrix->cols; ++X){
+                    Summation += this->data[i][X]*other.data[X][j];
+                }
+                returnedMatrix->data[i][j] = Summation;
+            }
+        }
+        return *returnedMatrix;
+    }
+
     void Matrix::ShowContent(){
         for(unsigned int i=0; i<rows; ++i){
             for(unsigned int j=0; j<cols; ++j){

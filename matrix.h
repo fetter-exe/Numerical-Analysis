@@ -47,10 +47,13 @@ class Matrix{
     // Return the Matrix's determinant
 
     virtual Matrix operator+(const Matrix& other) const;
-    // Return the result of a addition matrix operation
+    // Returns the result of a addition matrix operation
 
     virtual Matrix operator-(const Matrix& other) const;
-    // Return the result of a subtraction matrix operation
+    // Returns the result of a subtraction matrix operation
+
+    virtual Matrix operator*(const Matrix& other) const;
+    // Returns the result of a multiplication matrix operation
 
     void ShowContent();
 };
