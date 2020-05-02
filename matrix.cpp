@@ -4,6 +4,16 @@
 
     Matrix::Matrix(){}
 
+    Matrix::Matrix(const Matrix& other){
+        this->rows = other.rows;
+        this->cols = other.cols;
+        data.resize(rows);
+        for(unsigned int i=0; i<rows ; ++i){ // Fills the Matrix
+            copy(other.data[i].begin(), other.data[i].end(), back_inserter(this->data[i]));
+        }
+        DefineDeterminant();
+    }
+
     Matrix::Matrix(std::vector<std::vector<double>>& inputData){
         rows = inputData.size();
         cols = inputData[0].size();
@@ -73,11 +83,24 @@
     // IdentityMatrix implementation
 
     IdentityMatrix::IdentityMatrix(int Order): Matrix(){
-        if(Order< 0){
+        if(Order < 0){
             throw std::invalid_argument("negative arguments are not allowed");
         }
         this->rows = Order;
         this->cols = Order;
+        data.resize(rows);
+        for(unsigned int i=0; i<rows; ++i){
+            data[i].resize(cols);
+        }
+        for(unsigned int i=0; i<rows; ++i){
+            data[i][i] =  1.0;
+        }
+        DefineDeterminant();
+    }
+
+    IdentityMatrix::IdentityMatrix(const IdentityMatrix& other): Matrix(){
+        this->rows = other.rows;
+        this->cols = other.rows;
         data.resize(rows);
         for(unsigned int i=0; i<rows; ++i){
             data[i].resize(cols);

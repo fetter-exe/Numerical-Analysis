@@ -23,6 +23,9 @@ class Matrix{
   public:
 
     // Public constructors
+    Matrix(const Matrix& other);
+    // Instanciates a Matrix from a copy constructor
+
     Matrix(std::vector<std::vector<double>>& inputData);
     // Instanciates a Matrix from a two dimension vector of double
 
@@ -57,7 +60,11 @@ class IdentityMatrix : public Matrix{
 
     // Public constructors
     IdentityMatrix(int Order);
-    // Instanciates a identity Matrix with order specified by the variable Order
+    // Instanciates a IdentityMatrix with order specified by the variable Order
+
+    IdentityMatrix(const IdentityMatrix& other);
+    // Instanciates a IdentityMatrix  from a copy constructor
+
 };
 
 
