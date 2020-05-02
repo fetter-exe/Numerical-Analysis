@@ -46,6 +46,9 @@ class Matrix{
     virtual double Determinant() const;
     // Return the Matrix's determinant
 
+    Matrix operator=(const Matrix& other) = delete;
+    // Prevents Matrix data from being changed by the assignment operator
+
     virtual Matrix operator+(const Matrix& other) const;
     // Returns the result of a addition matrix operation
 
