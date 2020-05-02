@@ -47,15 +47,17 @@ class Matrix{
 };
 
 class IdentityMatrix : public Matrix{
-  public:
-
-    // Protected constructors
-    IdentityMatrix(int Order);
-    // Instanciates a identity Matrix with order specified by the variable Order
+  protected:
 
     // Protected methods
     void DefineDeterminant() override;
     // Optimizes the determinant's definition
+
+  public:
+
+    // Public constructors
+    IdentityMatrix(int Order);
+    // Instanciates a identity Matrix with order specified by the variable Order
 };
 
 
