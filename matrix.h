@@ -86,7 +86,6 @@ class IdentityMatrix : public Matrix{
 
     IdentityMatrix(const IdentityMatrix& other);
     // Instanciates a IdentityMatrix  from a copy constructor
-
 };
 
 

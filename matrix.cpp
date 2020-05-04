@@ -1,7 +1,7 @@
 #include "matrix.h"
 #include <stdlib.h>  // srand(); frand();
 #include <time.h>    // time;
-#include <memory>    // shared_ptr
+#include <memory>    // unique_ptr
 
     Matrix::Matrix(){}
 
@@ -73,14 +73,14 @@
         if(I > this->rows || J > this->rows){
             throw std::invalid_argument("tried to access an element that does not exist");
         }
-        return this->data[I-1][J-1];
+        return this->data[I][J];
     }
 
     Matrix Matrix::operator+(const Matrix& other) const{
         if(this->rows != other.rows || this->cols != other.cols){
             throw std::length_error("dimension mismatch"); // Checks for a required condition
         }
-        std::shared_ptr<Matrix> returnedMatrix(new Matrix(this->rows, this->cols));
+        std::unique_ptr<Matrix> returnedMatrix(new Matrix(this->rows, this->cols));
         for(unsigned int i=0; i<returnedMatrix->rows; ++i){ // Fills the Matrix
            for(unsigned int j=0; j<returnedMatrix->cols; ++j){
                returnedMatrix->data[i][j] = this->data[i][j] + other.data[i][j];
@@ -93,7 +93,7 @@
         if(this->rows != other.rows || this->cols != other.cols){
             throw std::length_error("dimension mismatch"); // Checks for a required condition
         }
-        std::shared_ptr<Matrix> returnedMatrix(new Matrix(this->rows, this->cols));
+        std::unique_ptr<Matrix> returnedMatrix(new Matrix(this->rows, this->cols));
         for(unsigned int i=0; i<returnedMatrix->rows; ++i){ // Fills the Matrix
            for(unsigned int j=0; j<returnedMatrix->cols; ++j){
                returnedMatrix->data[i][j] = this->data[i][j] - other.data[i][j];
@@ -106,21 +106,23 @@
         if(this->cols != other.rows){
             throw std::length_error("dimension mismatch"); // Checks for a required condition
         }
-        std::shared_ptr<Matrix> returnedMatrix(new Matrix(this->rows, other.cols));
-        for(unsigned int i=0; i<returnedMatrix->rows; ++i){ // Fills the Matrix
-           for(unsigned int j=0; j<returnedMatrix->cols; ++j){
-               double Summation = 0.0;
-               for(unsigned int X=0; X<returnedMatrix->cols; ++X){
-                    Summation += this->data[i][X]*other.data[X][j];
+        std::vector<std::vector<double>> returnedData;
+        returnedData.resize(this->rows);
+        for(unsigned int i=0; i<returnedData.size(); ++i){ // Fills the Matrix
+            returnedData[i].resize(other.cols);
+            for(unsigned int j=0; j<returnedData[0].size(); ++j){
+                returnedData[i][j] = 0.0;
+                for(unsigned int X=0; X<this->cols; ++X){
+                    returnedData[i][j] += this->data[i][X]*other.data[X][j];
                 }
-                returnedMatrix->data[i][j] = Summation;
             }
         }
+        std::unique_ptr<Matrix> returnedMatrix (new Matrix(returnedData));
         return *returnedMatrix;
     }
 
     Matrix Matrix::operator*(const double& scalar) const{
-        std::shared_ptr<Matrix> returnedMatrix(new Matrix(this->rows, this->cols));
+        std::unique_ptr<Matrix> returnedMatrix(new Matrix(this->rows, this->cols));
         for(unsigned int i=0; i<rows; ++i){
             for(unsigned int j=0; j<cols; ++j){
                 returnedMatrix->data[i][j] = this->data[i][j] * scalar;
@@ -129,10 +131,8 @@
         return *returnedMatrix;
     }
 
-
-
     Matrix operator*(const double& scalar, const Matrix& matrix){
-        std::shared_ptr<Matrix> returnedMatrix(new Matrix(matrix.rows, matrix.cols));
+        std::unique_ptr<Matrix> returnedMatrix(new Matrix(matrix.rows, matrix.cols));
         for(unsigned int i=0; i<returnedMatrix->rows; ++i){
             for(unsigned int j=0; j<returnedMatrix->cols; ++j){
                 returnedMatrix->data[i][j] = matrix.data[i][j] * scalar;
@@ -154,7 +154,6 @@
     }
 
     // IdentityMatrix implementation
-
     IdentityMatrix::IdentityMatrix(int Order): Matrix(){
         if(Order < 0){
             throw std::invalid_argument("negative arguments are not allowed");
