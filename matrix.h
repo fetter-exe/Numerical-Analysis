@@ -62,6 +62,12 @@ class Matrix{
     virtual Matrix operator*(const Matrix& other) const;
     // Returns the result of a multiplication matrix operation
 
+    virtual Matrix operator*(const double& scalar) const;
+    // Returns the result of a matrix scalar multiplication
+
+    friend Matrix operator*(const double& scalar, const Matrix& matrix);
+    // Returns the result of a matrix scalar multiplication
+
     void ShowContent();
 };
 

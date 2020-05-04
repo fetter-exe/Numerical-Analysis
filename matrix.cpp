@@ -119,6 +119,28 @@
         return *returnedMatrix;
     }
 
+    Matrix Matrix::operator*(const double& scalar) const{
+        std::shared_ptr<Matrix> returnedMatrix(new Matrix(this->rows, this->cols));
+        for(unsigned int i=0; i<rows; ++i){
+            for(unsigned int j=0; j<cols; ++j){
+                returnedMatrix->data[i][j] = this->data[i][j] * scalar;
+            }
+        }
+        return *returnedMatrix;
+    }
+
+
+
+    Matrix operator*(const double& scalar, const Matrix& matrix){
+        std::shared_ptr<Matrix> returnedMatrix(new Matrix(matrix.rows, matrix.cols));
+        for(unsigned int i=0; i<returnedMatrix->rows; ++i){
+            for(unsigned int j=0; j<returnedMatrix->cols; ++j){
+                returnedMatrix->data[i][j] = matrix.data[i][j] * scalar;
+            }
+        }
+        return *returnedMatrix;
+    }
+
     void Matrix::ShowContent(){
         for(unsigned int i=0; i<rows; ++i){
             for(unsigned int j=0; j<cols; ++j){
