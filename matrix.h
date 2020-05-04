@@ -6,6 +6,7 @@
 
 class Matrix{
   protected:
+
     // Protected attributes
     std::vector<std::vector<double>> data;
     unsigned int rows;
@@ -48,6 +49,9 @@ class Matrix{
 
     Matrix operator=(const Matrix& other) = delete;
     // Prevents Matrix data from being changed by the assignment operator
+
+    double operator()(const unsigned int& I, const unsigned int& J) const;
+    // Returns the Matrix's element indexed by row I and col J
 
     virtual Matrix operator+(const Matrix& other) const;
     // Returns the result of a addition matrix operation

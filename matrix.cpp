@@ -69,6 +69,13 @@
         return this->determinant;
     }
 
+    double Matrix::operator()(const unsigned int& I, const unsigned int& J) const{
+        if(I > this->rows || J > this->rows){
+            throw std::invalid_argument("tried to access an element that does not exist");
+        }
+        return this->data[I-1][J-1];
+    }
+
     Matrix Matrix::operator+(const Matrix& other) const{
         if(this->rows != other.rows || this->cols != other.cols){
             throw std::length_error("dimension mismatch"); // Checks for a required condition
