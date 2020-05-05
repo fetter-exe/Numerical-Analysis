@@ -86,6 +86,9 @@ class IdentityMatrix : public Matrix{
 
     IdentityMatrix(const IdentityMatrix& other);
     // Instanciates a IdentityMatrix  from a copy constructor
+
+    virtual Matrix operator*(const Matrix& other) const override;
+    // Optimizes the computation of a multiplication matrix operation
 };
 
 

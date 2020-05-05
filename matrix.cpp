@@ -183,6 +183,13 @@
         DefineDeterminant();
     }
 
+    Matrix IdentityMatrix::operator*(const Matrix& other) const{
+        if(this->cols != other.Rows()){
+            throw std::length_error("dimension mismatch"); // Checks for a required condition
+        }
+        return other;
+    }
+
     void IdentityMatrix::DefineDeterminant(){
         determinant = 1.0;
     } 
