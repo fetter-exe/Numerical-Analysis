@@ -6,6 +6,7 @@
 
 class Matrix{
   protected:
+
     // Protected attributes
     std::vector<std::vector<double>> data;
     unsigned int rows;
@@ -23,6 +24,9 @@ class Matrix{
   public:
 
     // Public constructors
+    Matrix(const Matrix& other);
+    // Instanciates a Matrix from a copy constructor
+
     Matrix(std::vector<std::vector<double>>& inputData);
     // Instanciates a Matrix from a two dimension vector of double
 
@@ -34,14 +38,35 @@ class Matrix{
     // between the arguments minLimit and maxLimit
 
     // Public methods
-    unsigned int Rows();
+    unsigned int Rows() const;
     // Return the number of rows
 
-    unsigned int Cols();
+    unsigned int Cols() const;
     // Return the number of cols
 
-    virtual double Determinant();
+    virtual double Determinant() const;
     // Return the Matrix's determinant
+
+    Matrix operator=(const Matrix& other) = delete;
+    // Prevents Matrix data from being changed by the assignment operator
+
+    double operator()(const unsigned int& I, const unsigned int& J) const;
+    // Returns the Matrix's element indexed by row I and col J
+
+    virtual Matrix operator+(const Matrix& other) const;
+    // Returns the result of a addition matrix operation
+
+    virtual Matrix operator-(const Matrix& other) const;
+    // Returns the result of a subtraction matrix operation
+
+    virtual Matrix operator*(const Matrix& other) const;
+    // Returns the result of a multiplication matrix operation
+
+    virtual Matrix operator*(const double& scalar) const;
+    // Returns the result of a matrix scalar multiplication
+
+    friend Matrix operator*(const double& scalar, const Matrix& matrix);
+    // Returns the result of a matrix scalar multiplication
 
     void ShowContent();
 };
@@ -57,7 +82,13 @@ class IdentityMatrix : public Matrix{
 
     // Public constructors
     IdentityMatrix(int Order);
-    // Instanciates a identity Matrix with order specified by the variable Order
+    // Instanciates a IdentityMatrix with order specified by the variable Order
+
+    IdentityMatrix(const IdentityMatrix& other);
+    // Instanciates a IdentityMatrix  from a copy constructor
+
+    virtual Matrix operator*(const Matrix& other) const override;
+    // Optimizes the computation of a multiplication matrix operation
 };
 
 
