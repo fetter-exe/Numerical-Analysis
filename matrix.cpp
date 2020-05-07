@@ -13,7 +13,9 @@
         for(unsigned int i=0; i<rows ; ++i){ // Fills the Matrix
             copy(other.data[i].begin(), other.data[i].end(), back_inserter(this->data[i]));
         }
-        DefineDeterminant();
+        if(rows == cols){
+            DefineDeterminant();
+        }
     }
 
     Matrix::Matrix(std::vector<std::vector<double>>& inputData){
@@ -23,7 +25,9 @@
         for(unsigned int i=0; i<rows ; ++i){ // Fills the Matrix
             copy(inputData[i].begin(), inputData[i].end(), back_inserter(data[i]));
         }
-        DefineDeterminant();
+        if(rows == cols){
+            DefineDeterminant();
+        }
     }
 
     Matrix::Matrix(int numberOfRows,int numberOfCols){
@@ -39,7 +43,9 @@
                 data[i].push_back((double)rand());
             }
         }
-        DefineDeterminant();
+        if(rows == cols){
+            DefineDeterminant();
+        }
     }
 
     Matrix::Matrix(int numberOfRows,int numberOfCols, double minLimit, double maxLimit){
@@ -55,7 +61,9 @@
                 data[i].push_back(minLimit + (double)rand()/maxLimit);
             }
         }
-        DefineDeterminant();
+        if(rows == cols){
+            DefineDeterminant();
+        }
     }
 
     unsigned int Matrix::Rows() const{
@@ -67,6 +75,9 @@
     }
 
     double Matrix::Determinant() const{
+        if(rows != cols){
+            throw std::length_error("non-square matrixes can't have a determinant");
+        }
         return this->determinant;
     }
 
