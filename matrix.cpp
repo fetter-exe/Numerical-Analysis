@@ -1,4 +1,5 @@
 #include "matrix.h"
+#include <sstream>   // stringstream
 #include <stdlib.h>  // srand(); frand();
 #include <time.h>    // time;
 #include <memory>    // unique_ptr
@@ -63,6 +64,27 @@
         }
         if(rows == cols){
             DefineDeterminant();
+        }
+    }
+
+    Matrix::Matrix(int numberOfRows, int numberOfCols, std::string numbers){
+        std::stringstream ss(numbers);
+        rows = numberOfRows;
+        cols = numberOfCols;
+
+        data.resize(rows);
+        for(unsigned int i = 0; i < rows; ++i){
+            data[i].resize(cols);
+        }
+
+        for(unsigned int i = 0; i < rows; ++i){ // loop to fill in the data
+            for(unsigned int j = 0; j < cols; ++j){
+                if(!ss.eof()){
+                    ss >> data[i][j];
+                }else{ // if eof has been reached, fill the remaining data with 0
+                    data[i][j] = 0;
+                }
+            }
         }
     }
 

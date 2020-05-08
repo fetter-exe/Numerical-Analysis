@@ -37,6 +37,9 @@ class Matrix{
     // Instanciates a Matrix with random positive numbers 
     // between the arguments minLimit and maxLimit
 
+    Matrix(int numberOfRows, int numberOfCols, std::string numbers);
+    // Instanciates a Matrix using the data from a string
+
     // Public methods
     unsigned int Rows() const;
     // Return the number of rows
