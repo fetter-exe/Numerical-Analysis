@@ -226,6 +226,8 @@
         return (det/total); // det(A) = det(kA) / k
     }
 
+    Matrix::~Matrix(){}
+
 
     // IdentityMatrix implementation
     IdentityMatrix::IdentityMatrix(int Order): Matrix(){
@@ -264,4 +266,6 @@
 
     double IdentityMatrix::Determinant() const{
         return 1.0;
-    } 
+    }
+
+    IdentitiyMatrix::~IdentityMatrix(){}

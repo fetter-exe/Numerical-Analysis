@@ -67,6 +67,8 @@ class Matrix{
 
     virtual double Determinant() const;
     // Calculates the matrix's Determinant
+
+    virtual ~Matrix();
 };
 
 class IdentityMatrix : public Matrix{
@@ -84,6 +86,8 @@ class IdentityMatrix : public Matrix{
 
     double Determinant() const override;
     // Optimizes the determinant's calculus
+
+    ~IdentityMatrix();
 };
 
 
