@@ -48,14 +48,26 @@ class Matrix{
     double operator()(const unsigned int& I, const unsigned int& J) const;
     // Returns the Matrix's element indexed by row I and col J
 
+    virtual Matrix Add(const Matrix& other) const;
+    // Returns the result of a addition matrix operation
+
     virtual Matrix operator+(const Matrix& other) const;
     // Returns the result of a addition matrix operation
+
+    virtual Matrix Subtract(const Matrix& other) const;
+    // Returns the result of a subtraction matrix operation
 
     virtual Matrix operator-(const Matrix& other) const;
     // Returns the result of a subtraction matrix operation
 
+    virtual Matrix Multiply(const Matrix& other) const;
+    // Returns the result of a multiplication matrix operation
+
     virtual Matrix operator*(const Matrix& other) const;
     // Returns the result of a multiplication matrix operation
+
+    virtual Matrix Multiply(const double& scalar) const;
+    // Returns the result of a matrix scalar multiplication
 
     virtual Matrix operator*(const double& scalar) const;
     // Returns the result of a matrix scalar multiplication
@@ -107,7 +119,7 @@ class IdentityMatrix : public Matrix{
     IdentityMatrix(const IdentityMatrix& other);
     // Instanciates a IdentityMatrix  from a copy constructor
 
-    virtual Matrix operator*(const Matrix& other) const override;
+    virtual Matrix Multiply(const Matrix& other) const override;
     // Optimizes the computation of a multiplication matrix operation
 
     double Determinant() const override;
