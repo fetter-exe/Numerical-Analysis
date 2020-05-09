@@ -11,15 +11,10 @@ class Matrix{
     std::vector<std::vector<double>> data;
     unsigned int rows;
     unsigned int cols;
-    double determinant;
 
     // Protected constructors
     Matrix();
     // Required for the IdentityMatrix's constructors
-
-    // Protected methods
-    virtual void DefineDeterminant();
-    // This method is called once in each constructor
 
   public:
 
@@ -37,15 +32,15 @@ class Matrix{
     // Instanciates a Matrix with random positive numbers 
     // between the arguments minLimit and maxLimit
 
+    Matrix(int numberOfRows, int numberOfCols, std::string elements);
+    // Instanciates a Matrix using the data from a string
+
     // Public methods
     unsigned int Rows() const;
     // Return the number of rows
 
     unsigned int Cols() const;
     // Return the number of cols
-
-    virtual double Determinant() const;
-    // Return the Matrix's determinant
 
     Matrix operator=(const Matrix& other) = delete;
     // Prevents Matrix data from being changed by the assignment operator
@@ -69,15 +64,14 @@ class Matrix{
     // Returns the result of a matrix scalar multiplication
 
     void ShowContent();
+
+    virtual double Determinant() const;
+    // Calculates the matrix's Determinant
+
+    virtual ~Matrix();
 };
 
 class IdentityMatrix : public Matrix{
-  protected:
-
-    // Protected methods
-    void DefineDeterminant() override;
-    // Optimizes the determinant's definition
-
   public:
 
     // Public constructors
@@ -89,6 +83,11 @@ class IdentityMatrix : public Matrix{
 
     virtual Matrix operator*(const Matrix& other) const override;
     // Optimizes the computation of a multiplication matrix operation
+
+    double Determinant() const override;
+    // Optimizes the determinant's calculus
+
+    ~IdentityMatrix();
 };
 
 
