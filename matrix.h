@@ -68,6 +68,12 @@ class Matrix{
     virtual double Determinant() const;
     // Calculates the matrix's Determinant
 
+    Matrix Transpose() const;
+    // Returns the Transpose of the matrix
+
+    Matrix Inverse() const;
+    // Returns the Inverse of the matrix
+
     virtual ~Matrix();
 };
 
