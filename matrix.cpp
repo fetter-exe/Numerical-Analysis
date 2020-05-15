@@ -344,3 +344,46 @@
     }
 
     IdentityMatrix::~IdentityMatrix(){}
+
+
+    // VandermondeMatrix implementation
+    VandermondeMatrix::VandermondeMatrix(std::vector<double>& inputData, int numberOfCols): Matrix(){
+        rows = inputData.size();
+        cols = numberOfCols;
+        data.resize(rows);
+        for(unsigned int i=0; i<rows; ++i){
+            data[i].resize(cols);
+            for(int j=0; j<numberOfCols; ++j){
+                this->data[i][j] = pow(inputData[i], j);
+            }
+        }
+    }
+
+    VandermondeMatrix::VandermondeMatrix(std::vector<double>& inputData): Matrix(){
+        rows = inputData.size();
+        cols = inputData.size();
+        data.resize(rows);
+        for(unsigned int i=0; i<rows; ++i){
+            data[i].resize(cols);
+            for(unsigned int j=0; j<cols; ++j){
+                this->data[i][j] = pow(inputData[i], j);
+            }
+        }
+    }
+
+    double VandermondeMatrix::Determinant() const{
+        // Ensures only square matrixes can use this method
+        if(rows != cols){
+            throw std::length_error("non-square matrixes can't have a determinant");
+        }
+
+        double Product = 1.0;
+        for(int i = rows-1; i > 0; --i){
+            for(int j = i-1; j >= 0 ; --j){
+                Product *= (data[i][1] - data[j][1]);
+            }
+        }
+        return Product;
+    }
+
+    VandermondeMatrix::~VandermondeMatrix(){}

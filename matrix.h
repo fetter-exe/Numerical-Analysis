@@ -37,10 +37,10 @@ class Matrix{
 
     // Public methods
     unsigned int Rows() const;
-    // Return the number of rows
+    // Returns the number of rows
 
     unsigned int Cols() const;
-    // Return the number of cols
+    // Returns the number of cols
 
     Matrix operator=(const Matrix& other) = delete;
     // Prevents Matrix data from being changed by the assignment operator
@@ -96,5 +96,21 @@ class IdentityMatrix : public Matrix{
     ~IdentityMatrix();
 };
 
+class VandermondeMatrix : public Matrix{
+  public:
 
-#endif // _MATRIX_H_
+    // Public constructors
+    VandermondeMatrix(std::vector<double>& inputData, int numberOfCols);
+    // Instanciates a VandermondeMatrix with inputData's size of rows and cols specified by numberOfCols.
+
+    VandermondeMatrix(std::vector<double>& inputData);
+    // Instanciates a square VandermondeMatrix with order specified by inputData's size.
+
+    double Determinant() const override;
+    // Returns the matrix's determinant through optimized calculation methods.
+
+    ~VandermondeMatrix();
+};
+
+
+#endif // _MATRIX_H_S
