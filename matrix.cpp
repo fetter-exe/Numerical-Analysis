@@ -164,6 +164,15 @@
         }
     }
 
+    void Matrix::ShowMatrix(){
+        for(unsigned int i = 0; i < rows; ++i){
+            for(unsigned int j = 0; j < cols; ++j){
+                std::cout << data[i][j] << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
     double Matrix::Determinant() const{
         // Ensures only square matrixes can use this method
         if(rows != cols){

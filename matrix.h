@@ -65,6 +65,8 @@ class Matrix{
 
     void ShowContent();
 
+    void ShowMatrix();
+
     virtual double Determinant() const;
     // Calculates the matrix's Determinant
 
