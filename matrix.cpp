@@ -35,7 +35,7 @@
         srand(time(NULL)); // Guarantees a random seed
         for(unsigned int i=0; i<rows; ++i){ // Fills the Matrix
             for(unsigned int j=0; j<cols; ++j){
-                data[i].push_back((double)rand());
+                rand()%2 == 0  ?  data[i].push_back((double)rand())  :  data[i].push_back(-(double)rand());
             }
         }
     }
@@ -46,11 +46,16 @@
         }
         rows = numberOfRows;
         cols = numberOfCols;
+
         data.resize(rows);
+        for(unsigned int i = 0; i < rows; ++i){
+            data[i].resize(cols);
+        }
+
         srand(time(NULL)); // Guarantees a random seed
-        for(unsigned int i=0; i<rows; ++i){ // Fills the Matrix
-            for(unsigned int j=0; j<cols; ++j){
-                data[i].push_back(minLimit + (double)rand()/maxLimit);
+        for(unsigned int i = 0; i < rows; ++i){ // Fills the Matrix
+            for(unsigned int j = 0; j < cols; ++j){
+                data[i][j] = minLimit + rand()%((int)(maxLimit - minLimit + 1));
             }
         }
     }
