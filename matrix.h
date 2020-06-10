@@ -76,6 +76,9 @@ class Matrix{
     Matrix Inverse() const;
     // Returns the Inverse of the matrix
 
+    Matrix InversePALU() const;
+    // Returns the Inverse of the matrix, uses LU decomposition
+
     virtual ~Matrix();
 };
 

@@ -315,6 +315,8 @@
         return (1/Determinant()) * c.Transpose();
     }
 
+    Matrix Matrix::InversePALU() const{}
+
     Matrix::~Matrix(){}
 
 
