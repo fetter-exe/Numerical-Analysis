@@ -185,31 +185,31 @@
         }
 
         double det = 1, total = 1;
-        unsigned int index, n = rows;
+        unsigned int idx, n = rows;
         std::vector<double> temp(rows);
         std::vector<std::vector<double>> mat = data;
 
         // Loop for traversing diagonal elements
         for(unsigned int k = 0; k < n; ++k){
-            index = k;
+            idx = k;
 
             // Finding the index that has a non-zero value
-            while(mat[index][k] == 0  &&  index < n){
-                ++index;
+            while(mat[idx][k] == 0  &&  idx < n){
+                ++idx;
             }
 
             // If there is non-zero element
-            if(index == n){
+            if(idx == n){
                 continue; // The determinant of matrix as zero
             }
 
-            if(index != k){
+            if(idx != k){
                 // Loop for swaping the index row and diagonal row
                 for(unsigned int j = 0; j < n; ++j){
-                    std::swap(mat[index][j], mat[k][j]);
+                    std::swap(mat[idx][j], mat[k][j]);
                 }
                 // Determinant changes sign when shifting rows
-                det *= pow(-1, index-k);
+                det *= pow(-1, idx-k);
             }
 
             // Storing the values of the diagonal row elements
@@ -315,7 +315,112 @@
         return (1/Determinant()) * c.Transpose();
     }
 
-    Matrix Matrix::InversePALU() const{}
+    Matrix Matrix::InversePALU() const{
+        // Ensures only valid matrixes can use this method
+        if(rows != cols){
+            throw std::length_error("Non-square matrixes don't have an inverse");
+        }
+        if(Determinant() == 0){
+            throw std::invalid_argument("Singular matrixes (det = 0) don't have an inverse");
+        }
+
+        // EXPLANATION OF HOW THIS METHOD WORKS
+        // PA = LU
+        // Ax = b  -->  PAx = Pb  -->  LUx = Pb
+        // Ux = y  <--  Ly = Pb
+
+        std::vector<std::vector<double>> aData(rows,std::vector<double>(cols,0));
+        std::vector<std::vector<double>> lData(aData), uData(aData), iData;
+        std::vector<double> pivot(rows,0);
+        int det = 1, n = rows;
+
+        for(int i = 0; i < n; ++i){
+            pivot[i] = i;
+        }
+
+        for(int j = 0; j < (n-1); ++j){
+            // choosing the pivot element
+            int p = j;
+            double amax = abs(aData[j][j]);
+            for(int k = j; k < n; ++k){
+                if(abs(aData[k][j]) > amax){
+                    amax = abs(aData[k][j]);
+                    p = k;
+                }
+            }
+            if(p != j){
+                // row swap
+                for(int k = 0; k < n; ++k){
+                    int temp = aData[j][k];
+                    aData[j][k] = aData[p][k];
+                    aData[p][k] = temp;
+                }
+                int temp = pivot[j];
+                pivot[j] = pivot[p];
+                pivot[p] = temp;
+                det *= -1;
+            }
+            det *= aData[j][j];
+            if(abs(aData[j][j]) != 0){
+                // Gauss elimination
+                double r = 1/aData[j][j];
+                for(int i = j; i < n; ++i){
+                    double mult = r * aData[i][j];
+                    aData[i][j] = mult;
+                    for(int k = j; k < n; ++k){
+                        aData[i][k] -= mult*aData[j][k];
+                    }
+                }
+            }
+        }
+        det *= aData[n-1][n-1];
+
+        for(int i = 0; i < n; ++i){ // Constructs L and U data
+            for(int j = 0; j < n; ++j){
+                if(i == j){
+                    lData[i][j] = 1;
+                    uData[i][j] = aData[i][j];
+                }else if(i > j){
+                    lData[i][j] = aData[i][j];
+                }else if(i < j){
+                    uData[i][j] = aData[i][j];
+                }
+            }
+        }
+
+        for(int k = 0; k < n; ++k){
+            std::vector<double> y(n,0), x(n,0), b(n,0);
+            int p;
+
+            // Solve Ly = Pb (successive substitutions)
+            b[k] = 1;
+            p = pivot[0];
+            y[0] = b[p];
+            for(int i = 1; i < n; ++i){
+                double sum = 0;
+                for(int j = 0; j < i; ++j){
+                    sum += lData[i][j] * y[j];
+                }
+                p = pivot[i];
+                y[i] = b[p] - sum;
+            }
+
+            // Solve Ux = y (retroactive substitutions)
+            x[n-1] = y[n-1] / uData[n-1][n-1];
+            for(int i = (n-2); i >= 0; --i){
+                double sum = 0;
+                for(int j = (i+1); j < n; ++j){
+                    sum += uData[i][j] * x[j];
+                }
+                x[i] = (y[i] - sum) / uData[i][i];
+            }
+
+            // Constructs the inverse matrix data
+            iData.push_back(x);
+        }
+
+        return Matrix(iData);
+    }
 
     Matrix::~Matrix(){}
 
