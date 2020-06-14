@@ -70,6 +70,9 @@ class Matrix{
     virtual double Determinant() const;
     // Calculates the matrix's Determinant
 
+    virtual double DeterminantPALU() const;
+    // Calculates the matrix's Determinant, uses LU decomposition
+
     Matrix Transpose() const;
     // Returns the Transpose of the matrix
 

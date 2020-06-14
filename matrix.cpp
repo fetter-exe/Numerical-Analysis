@@ -240,6 +240,60 @@
         return (det/total); // det(A) = det(kA) / k
     }
 
+    double Matrix::DeterminantPALU() const{
+        // Ensures only square matrixes can use this method
+        if(rows != cols){
+            throw std::length_error("non-square matrixes can't have a determinant");
+        }
+
+        std::vector<std::vector<double>> aData(rows,std::vector<double>(cols,0));
+        std::vector<double> pivot(rows,0);
+        int det = 1, n = rows;
+
+        for(int i = 0; i < n; ++i){
+            pivot[i] = i;
+        }
+
+        for(int j = 0; j < (n-1); ++j){
+            // choosing the pivot element
+            int p = j;
+            double amax = abs(aData[j][j]);
+            for(int k = j; k < n; ++k){
+                if(abs(aData[k][j]) > amax){
+                    amax = abs(aData[k][j]);
+                    p = k;
+                }
+            }
+            if(p != j){
+                // row swap
+                for(int k = 0; k < n; ++k){
+                    int temp = aData[j][k];
+                    aData[j][k] = aData[p][k];
+                    aData[p][k] = temp;
+                }
+                int temp = pivot[j];
+                pivot[j] = pivot[p];
+                pivot[p] = temp;
+                det *= -1;
+            }
+            det *= aData[j][j];
+            if(abs(aData[j][j]) != 0){
+                // Gauss elimination
+                double r = 1/aData[j][j];
+                for(int i = j; i < n; ++i){
+                    double mult = r * aData[i][j];
+                    aData[i][j] = mult;
+                    for(int k = j; k < n; ++k){
+                        aData[i][k] -= mult*aData[j][k];
+                    }
+                }
+            }
+        }
+        det *= aData[n-1][n-1];
+
+        return det;
+    }
+
     Matrix Matrix::Transpose() const{
         std::vector<std::vector<double>> tData;
 
