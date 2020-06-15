@@ -67,6 +67,18 @@ class Matrix{
 
     void ShowMatrix();
 
+    bool IsNull() const;
+    // Checks if a matrix is Null/Zero
+
+    bool IsDiagonal() const;
+    // Checks if a matrix is Diagonal
+
+    bool IsTriangular() const;
+    // Checks if a matrix is Triangular
+
+    bool IsSymmetric() const;
+    // Checks if a matrix is Symmetric
+
     virtual double Determinant() const;
     // Calculates the matrix's Determinant
 

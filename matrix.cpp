@@ -178,6 +178,51 @@
         }
     }
 
+    bool Matrix::IsNull() const{
+        for(unsigned int i = 0; i < rows; ++i){
+            for(unsigned int j = 0; j < cols; ++j){
+                if(data[i][j] != 0){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    bool Matrix::IsDiagonal() const{
+        if(IsNull()){
+            return false;
+        }
+        for(unsigned int i = 0; i < rows; ++i){
+            for(unsigned int j = 0; j < cols; ++j){
+                if(i != j  &&  data[i][j] != 0){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    bool Matrix::IsTriangular() const{
+        // Ensures only square matrixes can use this method
+        if(rows != cols){
+            throw std::length_error("non-square matrixes can't use this method");
+        }
+
+
+
+    }
+
+    bool Matrix::IsSymmetric() const{
+        // Ensures only square matrixes can use this method
+        if(rows != cols){
+            throw std::length_error("non-square matrixes can't use this method");
+        }
+
+
+
+    }
+
     double Matrix::Determinant() const{
         // Ensures only square matrixes can use this method
         if(rows != cols){
