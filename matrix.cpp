@@ -188,6 +188,24 @@
         unsigned int idx, n = rows;
         std::vector<double> temp(rows);
         std::vector<std::vector<double>> mat = data;
+        bool islt = true, isut = true;
+
+        for(unsigned int i = 0; i < n; ++i){ // Optimizes for triangular/diagonal matrixes
+            for(unsigned int j = 0; j < n; ++j){
+                if(i > j  &&  mat[i][j] != 0){
+                    isut = false;
+                }
+                if(i < j  &&  mat[i][j] != 0){
+                    islt = false;
+                }
+            }
+        }
+        if(islt || isut){
+            for(unsigned int k = 0; k < n; ++k){
+                det *= mat[k][k];
+            }
+            return det;
+        }
 
         // Loop for traversing diagonal elements
         for(unsigned int k = 0; k < n; ++k){
@@ -246,9 +264,27 @@
             throw std::length_error("non-square matrixes can't have a determinant");
         }
 
-        std::vector<std::vector<double>> aData(rows,std::vector<double>(cols,0));
+        std::vector<std::vector<double>> aData = data;
         std::vector<double> pivot(rows,0);
         int det = 1, n = rows;
+        bool islt = true, isut = true;
+
+        for(int i = 0; i < n; ++i){ // Optimizes for triangular/diagonal matrixes
+            for(int j = 0; j < n; ++j){
+                if(i > j  &&  aData[i][j] != 0){
+                    isut = false;
+                }
+                if(i < j  &&  aData[i][j] != 0){
+                    islt = false;
+                }
+            }
+        }
+        if(islt || isut){
+            for(int k = 0; k < n; ++k){
+                det *= aData[k][k];
+            }
+            return det;
+        }
 
         for(int i = 0; i < n; ++i){
             pivot[i] = i;
@@ -374,7 +410,7 @@
         if(rows != cols){
             throw std::length_error("Non-square matrixes don't have an inverse");
         }
-        if(Determinant() == 0){
+        if(DeterminantPALU() == 0){
             throw std::invalid_argument("Singular matrixes (det = 0) don't have an inverse");
         }
 
@@ -383,8 +419,8 @@
         // Ax = b  -->  PAx = Pb  -->  LUx = Pb
         // Ux = y  <--  Ly = Pb
 
-        std::vector<std::vector<double>> aData(rows,std::vector<double>(cols,0));
-        std::vector<std::vector<double>> lData(aData), uData(aData), iData;
+        std::vector<std::vector<double>> aData = data, iData;
+        std::vector<std::vector<double>> lData(rows,std::vector<double>(cols,0)), uData(lData);
         std::vector<double> pivot(rows,0);
         int det = 1, n = rows;
 
