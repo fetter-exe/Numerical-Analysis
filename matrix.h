@@ -70,17 +70,11 @@ class Matrix{
     virtual double Determinant() const;
     // Calculates the matrix's Determinant
 
-    virtual double DeterminantPALU() const;
-    // Calculates the matrix's Determinant, uses LU decomposition
-
     Matrix Transpose() const;
     // Returns the Transpose of the matrix
 
     Matrix Inverse() const;
     // Returns the Inverse of the matrix
-
-    Matrix InversePALU() const;
-    // Returns the Inverse of the matrix, uses LU decomposition
 
     virtual ~Matrix();
 };
