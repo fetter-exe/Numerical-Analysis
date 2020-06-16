@@ -246,19 +246,8 @@
         unsigned int idx, n = rows;
         std::vector<double> temp(rows);
         std::vector<std::vector<double>> mat = data;
-        bool islt = true, isut = true;
 
-        for(unsigned int i = 0; i < n; ++i){ // Optimizes for triangular/diagonal matrixes
-            for(unsigned int j = 0; j < n; ++j){
-                if(i > j  &&  mat[i][j] != 0){
-                    isut = false;
-                }
-                if(i < j  &&  mat[i][j] != 0){
-                    islt = false;
-                }
-            }
-        }
-        if(islt || isut){
+        if(IsDiagonal() || IsTriangular()){ // Optimizes for diagonal/triangular matrixes
             for(unsigned int k = 0; k < n; ++k){
                 det *= mat[k][k];
             }
