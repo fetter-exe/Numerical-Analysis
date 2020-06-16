@@ -204,23 +204,36 @@
     }
 
     bool Matrix::IsTriangular() const{
-        // Ensures only square matrixes can use this method
-        if(rows != cols){
-            throw std::length_error("non-square matrixes can't use this method");
+        bool isTriang, isUpper = true, isLower = true;
+        if(rows != cols  ||  IsNull()){
+            return false;
         }
-
-
-
+        for(unsigned int i = 0; i < rows; ++i){
+            for(unsigned int j = 0; j < cols; ++j){
+                if(i < j  &&  data[i][j] != 0){
+                    isUpper = false;
+                }
+                if(i > j  &&  data[i][j] != 0){
+                    isLower = false;
+                }
+            }
+        }
+        isTriang = (isUpper != isLower) ? true : false;
+        return isTriang;
     }
 
     bool Matrix::IsSymmetric() const{
-        // Ensures only square matrixes can use this method
         if(rows != cols){
-            throw std::length_error("non-square matrixes can't use this method");
+            return false;
         }
-
-
-
+        for(unsigned int i = 0; i < rows; ++i){
+            for(unsigned int j = 0; j < cols; ++j){
+                if(data[i][j] != data[j][i]){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     double Matrix::Determinant() const{
