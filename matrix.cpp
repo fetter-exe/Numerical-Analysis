@@ -258,6 +258,21 @@
             return det;
         }
 
+        if(n == 1){ // Optimizes for small matrixes
+            det = data[0][0];
+            return det;
+        }else if(n == 2){
+            det = data[0][0]*data[1][1] - data[0][1]*data[1][0];
+            return det;
+        }
+        else if(n == 3){
+            det = 0;
+            det += data[0][0] * (data[1][1]*data[2][2] - data[1][2]*data[2][1]);
+            det -= data[0][1] * (data[1][0]*data[2][2] - data[1][2]*data[2][0]);
+            det += data[0][2] * (data[1][0]*data[2][1] - data[1][1]*data[2][0]);
+            return det;
+        }
+
         // Loop for traversing diagonal elements
         for(unsigned int k = 0; k < n; ++k){
             idx = k;
