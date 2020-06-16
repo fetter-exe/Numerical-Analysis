@@ -392,6 +392,7 @@
                 }
                 Matrix m = Matrix(mData);
                 cData[i][j] = pow(-1,i+j) * m.Determinant();
+                if(cData[i][j] == -0){ cData[i][j] = 0; }
             }
         }
 
