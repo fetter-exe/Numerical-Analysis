@@ -178,6 +178,64 @@
         }
     }
 
+    bool Matrix::IsNull() const{
+        for(unsigned int i = 0; i < rows; ++i){
+            for(unsigned int j = 0; j < cols; ++j){
+                if(data[i][j] != 0){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    bool Matrix::IsDiagonal() const{
+        if(IsNull()){
+            return false;
+        }
+        for(unsigned int i = 0; i < rows; ++i){
+            for(unsigned int j = 0; j < cols; ++j){
+                if(i != j  &&  data[i][j] != 0){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    bool Matrix::IsTriangular() const{
+        bool isTriang, isUpper = true, isLower = true;
+        if(rows != cols  ||  IsNull()){
+            return false;
+        }
+        for(unsigned int i = 0; i < rows; ++i){
+            for(unsigned int j = 0; j < cols; ++j){
+                if(i < j  &&  data[i][j] != 0){
+                    isUpper = false;
+                }
+                if(i > j  &&  data[i][j] != 0){
+                    isLower = false;
+                }
+            }
+        }
+        isTriang = (isUpper != isLower) ? true : false;
+        return isTriang;
+    }
+
+    bool Matrix::IsSymmetric() const{
+        if(rows != cols){
+            return false;
+        }
+        for(unsigned int i = 0; i < rows; ++i){
+            for(unsigned int j = 0; j < cols; ++j){
+                if(data[i][j] != data[j][i]){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     double Matrix::Determinant() const{
         // Ensures only square matrixes can use this method
         if(rows != cols){
@@ -185,31 +243,38 @@
         }
 
         double det = 1, total = 1;
-        unsigned int index, n = rows;
+        unsigned int idx, n = rows;
         std::vector<double> temp(rows);
         std::vector<std::vector<double>> mat = data;
 
+        if(IsDiagonal() || IsTriangular()){ // Optimizes for diagonal/triangular matrixes
+            for(unsigned int k = 0; k < n; ++k){
+                det *= mat[k][k];
+            }
+            return det;
+        }
+
         // Loop for traversing diagonal elements
         for(unsigned int k = 0; k < n; ++k){
-            index = k;
+            idx = k;
 
             // Finding the index that has a non-zero value
-            while(mat[index][k] == 0  &&  index < n){
-                ++index;
+            while(mat[idx][k] == 0  &&  idx < n){
+                ++idx;
             }
 
             // If there is non-zero element
-            if(index == n){
+            if(idx == n){
                 continue; // The determinant of matrix as zero
             }
 
-            if(index != k){
+            if(idx != k){
                 // Loop for swaping the index row and diagonal row
                 for(unsigned int j = 0; j < n; ++j){
-                    std::swap(mat[index][j], mat[k][j]);
+                    std::swap(mat[idx][j], mat[k][j]);
                 }
                 // Determinant changes sign when shifting rows
-                det *= pow(-1, index-k);
+                det *= pow(-1, idx-k);
             }
 
             // Storing the values of the diagonal row elements
