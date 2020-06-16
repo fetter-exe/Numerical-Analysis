@@ -247,6 +247,10 @@
         std::vector<double> temp(rows);
         std::vector<std::vector<double>> mat = data;
 
+        if(IsNull()){ // Optimizes for Null/Zero matrixes
+            det = 0;
+            return det;
+        }
         if(IsDiagonal() || IsTriangular()){ // Optimizes for diagonal/triangular matrixes
             for(unsigned int k = 0; k < n; ++k){
                 det *= mat[k][k];
