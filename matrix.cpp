@@ -247,10 +247,29 @@
         std::vector<double> temp(rows);
         std::vector<std::vector<double>> mat = data;
 
+        if(IsNull()){ // Optimizes for Null/Zero matrixes
+            det = 0;
+            return det;
+        }
         if(IsDiagonal() || IsTriangular()){ // Optimizes for diagonal/triangular matrixes
             for(unsigned int k = 0; k < n; ++k){
                 det *= mat[k][k];
             }
+            return det;
+        }
+
+        if(n == 1){ // Optimizes for small matrixes
+            det = data[0][0];
+            return det;
+        }else if(n == 2){
+            det = data[0][0]*data[1][1] - data[0][1]*data[1][0];
+            return det;
+        }
+        else if(n == 3){
+            det = 0;
+            det += data[0][0] * (data[1][1]*data[2][2] - data[1][2]*data[2][1]);
+            det -= data[0][1] * (data[1][0]*data[2][2] - data[1][2]*data[2][0]);
+            det += data[0][2] * (data[1][0]*data[2][1] - data[1][1]*data[2][0]);
             return det;
         }
 
@@ -303,6 +322,44 @@
         }
 
         return (det/total); // det(A) = det(kA) / k
+    }
+
+    Matrix Matrix::Submatrix(int i, int j) const{
+        if(rows <= 1  ||  cols <= 1){
+            return Matrix(0,0);
+        }
+
+        std::vector<std::vector<double>> smData;
+        unsigned int smi, smj;
+
+        if(i < 0){ i = rows; }
+        if(j < 0){ j = cols; }
+
+        if((unsigned)i >= rows  &&  (unsigned)j >= cols){
+            smData = std::vector<std::vector<double>>(rows,std::vector<double>(cols));
+        }else if((unsigned)i >= rows  &&  (unsigned)j < cols){
+            smData = std::vector<std::vector<double>>(rows,std::vector<double>(cols-1));
+        }else if((unsigned)j >= cols  &&  (unsigned)i < rows){
+            smData = std::vector<std::vector<double>>(rows-1,std::vector<double>(cols));
+        }else{
+            smData = std::vector<std::vector<double>>(rows-1,std::vector<double>(cols-1));
+        }
+
+        smi = 0;
+        for(unsigned int i2 = 0; i2 < rows; ++i2){
+            if(i2 != (unsigned)i){
+                smj = 0;
+                for(unsigned int j2 = 0; j2 < cols; ++j2){
+                    if(j2 != (unsigned)j){
+                        smData[smi][smj] = data[i2][j2];
+                        ++smj;
+                    }
+                }
+                ++smi;
+            }
+        }
+
+        return Matrix(smData);
     }
 
     Matrix Matrix::Transpose() const{
@@ -373,6 +430,7 @@
                 }
                 Matrix m = Matrix(mData);
                 cData[i][j] = pow(-1,i+j) * m.Determinant();
+                if(cData[i][j] == -0){ cData[i][j] = 0; }
             }
         }
 
