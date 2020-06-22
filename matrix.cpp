@@ -434,8 +434,17 @@
             }
         }
 
-        Matrix c = Matrix(cData);
-        return (1/Determinant()) * c.Transpose();
+        Matrix inv = Matrix((1/Determinant()) * Matrix(cData).Transpose());
+
+        for(unsigned int i = 0; i < rows; ++i){
+            for(unsigned int j = 0; j < cols; ++j){
+                if(inv.data[i][j] == -0){
+                    inv.data[i][j] = 0;
+                }
+            }
+        }
+
+        return inv;
     }
 
     Matrix::~Matrix(){}
