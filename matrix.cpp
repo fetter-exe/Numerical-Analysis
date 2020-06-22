@@ -430,12 +430,20 @@
                 }
                 Matrix m = Matrix(mData);
                 cData[i][j] = pow(-1,i+j) * m.Determinant();
-                if(cData[i][j] == -0){ cData[i][j] = 0; }
             }
         }
 
-        Matrix c = Matrix(cData);
-        return (1/Determinant()) * c.Transpose();
+        Matrix inv = Matrix((1/Determinant()) * Matrix(cData).Transpose());
+
+        for(unsigned int i = 0; i < rows; ++i){
+            for(unsigned int j = 0; j < cols; ++j){
+                if(inv.data[i][j] == -0){
+                    inv.data[i][j] = 0;
+                }
+            }
+        }
+
+        return inv;
     }
 
     Matrix::~Matrix(){}
