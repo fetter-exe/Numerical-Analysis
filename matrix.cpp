@@ -324,8 +324,8 @@
         return (det/total); // det(A) = det(kA) / k
     }
 
-    Matrix Matrix::Submatrix(int i, int j) const{
-        if(rows <= 1  ||  cols <= 1){
+    Matrix Matrix::SubMatrix(int i, int j) const{
+        if((rows==1 || cols==1) && (i==0 || j==0)){
             return Matrix(0,0);
         }
 
@@ -336,13 +336,13 @@
         if(j < 0){ j = cols; }
 
         if((unsigned)i >= rows  &&  (unsigned)j >= cols){
-            smData = std::vector<std::vector<double>>(rows,std::vector<double>(cols));
+            smData = std::vector<std::vector<double>>(rows,std::vector<double>(cols,0));
         }else if((unsigned)i >= rows  &&  (unsigned)j < cols){
-            smData = std::vector<std::vector<double>>(rows,std::vector<double>(cols-1));
+            smData = std::vector<std::vector<double>>(rows,std::vector<double>(cols-1,0));
         }else if((unsigned)j >= cols  &&  (unsigned)i < rows){
-            smData = std::vector<std::vector<double>>(rows-1,std::vector<double>(cols));
+            smData = std::vector<std::vector<double>>(rows-1,std::vector<double>(cols,0));
         }else{
-            smData = std::vector<std::vector<double>>(rows-1,std::vector<double>(cols-1));
+            smData = std::vector<std::vector<double>>(rows-1,std::vector<double>(cols-1,0));
         }
 
         smi = 0;
