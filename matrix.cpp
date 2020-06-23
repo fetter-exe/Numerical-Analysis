@@ -502,6 +502,9 @@
         }
 
         L.data = lData; U.data = uData; P.data = pData;
+        L.rows = lData.size(); L.cols = lData[0].size();
+        U.rows = uData.size(); U.cols = uData[0].size();
+        P.rows = pData.size(); P.cols = pData[0].size();
     }
 
     Matrix::~Matrix(){}
