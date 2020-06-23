@@ -91,6 +91,9 @@ class Matrix{
     Matrix Inverse() const;
     // Returns the Inverse of the matrix
 
+    void LU(Matrix& L, Matrix& U, Matrix& P) const;
+    // LU Decomposition with partial pivoting (PA = LU)
+
     virtual ~Matrix();
 };
 
