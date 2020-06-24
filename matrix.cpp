@@ -81,11 +81,11 @@
         }
     }
 
-    unsigned int Matrix::Rows() const{
+    unsigned int Matrix::GetRows() const{
         return this->rows;
     }
 
-    unsigned int Matrix::Cols() const{
+    unsigned int Matrix::GetCols() const{
         return this->cols;
     }
 
@@ -478,7 +478,7 @@
     }
 
     Matrix IdentityMatrix::operator*(const Matrix& other) const{
-        if(this->cols != other.Rows()){
+        if(this->cols != other.GetRows()){
             throw std::length_error("dimension mismatch"); // Checks for a required condition
         }
         return other;

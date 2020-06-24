@@ -36,10 +36,10 @@ class Matrix{
     // Instanciates a Matrix using the data from a string
 
     // Public methods
-    unsigned int Rows() const;
+    unsigned int GetRows() const;
     // Returns the number of rows
 
-    unsigned int Cols() const;
+    unsigned int GetCols() const;
     // Returns the number of cols
 
     Matrix operator=(const Matrix& other) = delete;
