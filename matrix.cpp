@@ -446,6 +446,67 @@
         return inv;
     }
 
+    void Matrix::LU(Matrix& L, Matrix& U, Matrix& P) const{
+        if(this->rows != this->cols){
+            throw std::length_error("only square matrixes can use the LU Decomposition");
+        }
+
+        unsigned int n = rows;
+        std::vector<unsigned int> pivot(n,0);
+        std::vector<std::vector<double>> pData(n,std::vector<double>(n,0));
+        std::vector<std::vector<double>> aData(this->data), lData(pData), uData(pData);
+
+        for(unsigned int i = 0; i < n; ++i){
+            pivot[i] = i;
+        }
+
+        for(unsigned int j = 0; j < (n-1); ++j){
+            unsigned int p = j;
+            double aMax = std::abs(aData[j][j]);
+            for(unsigned int k = (j+1); k < n; ++k){
+                if(std::abs(aData[k][j]) > aMax){
+                    aMax = std::abs(aData[k][j]);
+                    p = k;
+                }
+            }
+            if(p != j){
+                for(unsigned int k = 0; k < n; ++k){
+                    std::swap(aData[j][k],aData[p][k]);
+                }
+                std::swap(pivot[j],pivot[p]);
+            }
+            if(std::abs(aData[j][j]) != 0){
+                double r = 1/aData[j][j];
+                for(unsigned int i = (j+1); i < n; ++i){
+                    double mult = r * aData[i][j];
+                    aData[i][j] = mult;
+                    for(unsigned int k = (j+1); k < n; ++k){
+                        aData[i][k] -= mult * aData[j][k];
+                    }
+                }
+            }
+        }
+
+        for(unsigned int i = 0; i < n; ++i){
+            for(unsigned int j = 0; j < n; ++j){
+                if(i == j){
+                    lData[i][j] = 1;
+                    uData[i][j] = aData[i][j];
+                }else if(i > j){
+                    lData[i][j] = aData[i][j];
+                }else if(i < j){
+                    uData[i][j] = aData[i][j];
+                }
+            }
+            pData[i][pivot[i]] = 1;
+        }
+
+        L.data = lData; U.data = uData; P.data = pData;
+        L.rows = lData.size(); L.cols = lData[0].size();
+        U.rows = uData.size(); U.cols = uData[0].size();
+        P.rows = pData.size(); P.cols = pData[0].size();
+    }
+
     Matrix::~Matrix(){}
 
 
