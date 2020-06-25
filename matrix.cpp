@@ -476,7 +476,7 @@
         return inv;
     }
 
-    void Matrix::LU(Matrix& L, Matrix& U, Matrix& P) const{
+    Decomposition Matrix::LU() const{
         if(this->rows != this->cols){
             throw std::length_error("only square matrixes can use the LU Decomposition");
         }
@@ -531,10 +531,7 @@
             pData[i][pivot[i]] = 1;
         }
 
-        L.data = lData; U.data = uData; P.data = pData;
-        L.rows = lData.size(); L.cols = lData[0].size();
-        U.rows = uData.size(); U.cols = uData[0].size();
-        P.rows = pData.size(); P.cols = pData[0].size();
+        return Decomposition("lu", Matrix(lData), Matrix(uData), Matrix(pData));
     }
 
     Matrix::~Matrix(){}
@@ -630,7 +627,7 @@
         : l(Matrix(0,0)), u(Matrix(0,0)), p(Matrix(0,0)), lt(Matrix(0,0)), d(Matrix(0,0))
     {}
 
-    Decomposition::Decomposition(std::string& decomp, const Matrix& l, const Matrix& lt) // cholesky
+    Decomposition::Decomposition(const char* decomp, const Matrix& l, const Matrix& lt) // cholesky
         : l(Matrix(0,0)), u(Matrix(0,0)), p(Matrix(0,0)), lt(Matrix(0,0)), d(Matrix(0,0))
     {
         if(decomp == "chol" || decomp == "cholesky"){
@@ -638,7 +635,7 @@
         }
     }
 
-    Decomposition::Decomposition(std::string& decomp, const Matrix& l, const Matrix& ult, const Matrix& pd) // lu / ldlt
+    Decomposition::Decomposition(const char* decomp, const Matrix& l, const Matrix& ult, const Matrix& pd) // lu / ldlt
         : l(Matrix(0,0)), u(Matrix(0,0)), p(Matrix(0,0)), lt(Matrix(0,0)), d(Matrix(0,0))
     {
         if(decomp == "lu" || decomp == "palu"){

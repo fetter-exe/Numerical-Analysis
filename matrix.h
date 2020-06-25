@@ -4,6 +4,8 @@
 #include  <iostream>
 #include  <vector>
 
+struct Decomposition;
+
 class Matrix{
   protected:
 
@@ -106,7 +108,7 @@ class Matrix{
     Matrix Inverse() const;
     // Returns the Inverse of the matrix
 
-    void LU(Matrix& L, Matrix& U, Matrix& P) const;
+    Decomposition LU() const;
     // LU Decomposition with partial pivoting (PA = LU)
 
     virtual ~Matrix();
@@ -150,8 +152,8 @@ class VandermondeMatrix : public Matrix{
 struct Decomposition{
     Matrix l, u, p, lt, d;
     Decomposition();
-    Decomposition(std::string& decomp, const Matrix& l, const Matrix& lt); // cholesky
-    Decomposition(std::string& decomp, const Matrix& l, const Matrix& ult, const Matrix& pd); // lu / ldlt
+    Decomposition(const char* decomp, const Matrix& l, const Matrix& lt); // cholesky
+    Decomposition(const char* decomp, const Matrix& l, const Matrix& ult, const Matrix& pd); // lu / ldlt
     Decomposition(const Matrix& l, const Matrix& u, const Matrix& p, const Matrix& lt, const Matrix& d);
 };
 
