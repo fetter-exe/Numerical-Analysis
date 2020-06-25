@@ -624,28 +624,28 @@
 
     // Decomposition struct implementation
     Decomposition::Decomposition() // default constructor
-        : l(Matrix(0,0)), u(Matrix(0,0)), p(Matrix(0,0)), lt(Matrix(0,0)), d(Matrix(0,0))
+        : lower(Matrix(0,0)), upper(Matrix(0,0)), pivot(Matrix(0,0)), lower_transpose(Matrix(0,0)), diagonal(Matrix(0,0))
     {}
 
-    Decomposition::Decomposition(const char* decomp, const Matrix& l, const Matrix& lt) // cholesky
-        : l(Matrix(0,0)), u(Matrix(0,0)), p(Matrix(0,0)), lt(Matrix(0,0)), d(Matrix(0,0))
+    Decomposition::Decomposition(const char* decomp, const Matrix& lower, const Matrix& lower_transpose) // cholesky
+        : lower(Matrix(0,0)), upper(Matrix(0,0)), pivot(Matrix(0,0)), lower_transpose(Matrix(0,0)), diagonal(Matrix(0,0))
     {
-        if(decomp == "chol" || decomp == "cholesky"){
-            this->l = l; this->lt = lt;
+        if(std::string(decomp) == "chol" || std::string(decomp) == "cholesky"){
+            this->lower = lower; this->lower_transpose = lower_transpose;
         }
     }
 
-    Decomposition::Decomposition(const char* decomp, const Matrix& l, const Matrix& ult, const Matrix& pd) // lu / ldlt
-        : l(Matrix(0,0)), u(Matrix(0,0)), p(Matrix(0,0)), lt(Matrix(0,0)), d(Matrix(0,0))
+    Decomposition::Decomposition(const char* decomp, const Matrix& lower, const Matrix& upper_or_lower_transpose, const Matrix& pivot_or_diagonal) // lu / ldlt
+        : lower(Matrix(0,0)), upper(Matrix(0,0)), pivot(Matrix(0,0)), lower_transpose(Matrix(0,0)), diagonal(Matrix(0,0))
     {
-        if(decomp == "lu" || decomp == "palu"){
-            this->l = l; this->u = ult; this->p = pd;
+        if(std::string(decomp) == "lu" || std::string(decomp) == "palu"){
+            this->lower = lower; this->upper = upper_or_lower_transpose; this->pivot = pivot_or_diagonal;
         }
-        else if(decomp == "ldlt"){
-            this->l = l; this->d = pd; this->lt = ult;
+        else if(std::string(decomp) == "ldlt"){
+            this->lower = lower; this->diagonal = pivot_or_diagonal; this->lower_transpose = upper_or_lower_transpose;
         }
     }
 
-    Decomposition::Decomposition(const Matrix& l, const Matrix& u, const Matrix& p, const Matrix& lt, const Matrix& d)
-        : l(l), u(u), p(p), lt(lt), d(d)
+    Decomposition::Decomposition(const Matrix& lower, const Matrix& upper, const Matrix& pivot, const Matrix& lower_transpose, const Matrix& diagonal)
+        : lower(lower), upper(upper), pivot(pivot), lower_transpose(lower_transpose), diagonal(diagonal)
     {}

@@ -150,11 +150,11 @@ class VandermondeMatrix : public Matrix{
 };
 
 struct Decomposition{
-    Matrix l, u, p, lt, d;
+    Matrix lower, upper, pivot, lower_transpose, diagonal;
     Decomposition();
-    Decomposition(const char* decomp, const Matrix& l, const Matrix& lt); // cholesky
-    Decomposition(const char* decomp, const Matrix& l, const Matrix& ult, const Matrix& pd); // lu / ldlt
-    Decomposition(const Matrix& l, const Matrix& u, const Matrix& p, const Matrix& lt, const Matrix& d);
+    Decomposition(const char* decomp, const Matrix& lower, const Matrix& lower_transpose); // cholesky
+    Decomposition(const char* decomp, const Matrix& lower, const Matrix& upper_or_lower_transpose, const Matrix& pivot_or_diagonal); // lu / ldlt
+    Decomposition(const Matrix& lower, const Matrix& upper, const Matrix& pivot, const Matrix& lower_transpose, const Matrix& diagonal);
 };
 
 #endif // _MATRIX_H_
