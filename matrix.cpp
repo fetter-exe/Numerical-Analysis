@@ -5,6 +5,7 @@
 #include <memory>    // unique_ptr
 #include <cmath>     // pow()
 
+    // Matrix implementation
     Matrix::Matrix(){}
 
     Matrix::Matrix(const Matrix& other){
@@ -96,7 +97,7 @@
         return this->data[I][J];
     }
 
-    Matrix Matrix::operator+(const Matrix& other) const{
+    Matrix Matrix::Add(const Matrix& other) const{
         if(this->rows != other.rows || this->cols != other.cols){
             throw std::length_error("dimension mismatch"); // Checks for a required condition
         }
@@ -109,7 +110,11 @@
         return *returnedMatrix;
     }
 
-    Matrix Matrix::operator-(const Matrix& other) const{
+    Matrix Matrix::operator+(const Matrix& other) const{
+        return Add(other);
+    }
+
+    Matrix Matrix::Subtract(const Matrix& other) const{
         if(this->rows != other.rows || this->cols != other.cols){
             throw std::length_error("dimension mismatch"); // Checks for a required condition
         }
@@ -122,7 +127,11 @@
         return *returnedMatrix;
     }
 
-    Matrix Matrix::operator*(const Matrix& other) const{
+    Matrix Matrix::operator-(const Matrix& other) const{
+        return Subtract(other);
+    }
+
+    Matrix Matrix::Multiply(const Matrix& other) const{
         if(this->cols != other.rows){
             throw std::length_error("dimension mismatch"); // Checks for a required condition
         }
@@ -141,7 +150,11 @@
         return *returnedMatrix;
     }
 
-    Matrix Matrix::operator*(const double& scalar) const{
+    Matrix Matrix::operator*(const Matrix& other) const{
+        return Multiply(other);
+    }
+
+    Matrix Matrix::Multiply(const double& scalar) const{
         std::unique_ptr<Matrix> returnedMatrix(new Matrix(this->rows, this->cols));
         for(unsigned int i=0; i<rows; ++i){
             for(unsigned int j=0; j<cols; ++j){
@@ -151,14 +164,31 @@
         return *returnedMatrix;
     }
 
-    Matrix operator*(const double& scalar, const Matrix& matrix){
-        std::unique_ptr<Matrix> returnedMatrix(new Matrix(matrix.rows, matrix.cols));
-        for(unsigned int i=0; i<returnedMatrix->rows; ++i){
-            for(unsigned int j=0; j<returnedMatrix->cols; ++j){
-                returnedMatrix->data[i][j] = matrix.data[i][j] * scalar;
+    Matrix Matrix::operator*(const double& scalar) const{
+        return Multiply(scalar);
+    }
+
+    bool Matrix::IsEqual(const Matrix& other) const{
+        if(this->rows != other.rows || this->cols != other.cols){
+            return false;
+        }
+        for(unsigned int i=0; i<rows; ++i){
+            for(unsigned int j=0; j<cols; ++j){
+                if(data[i][j] != other.data[i][j]){
+                    return false;
+                }
             }
         }
-        return *returnedMatrix;
+        return true;
+    }
+
+    bool Matrix::operator==(const Matrix& other) const{
+        return IsEqual(other);
+    }
+
+
+    Matrix operator*(const double& scalar, const Matrix& matrix){
+        return matrix*scalar;
     }
 
     void Matrix::ShowContent(){
@@ -538,8 +568,8 @@
         }
     }
 
-    Matrix IdentityMatrix::operator*(const Matrix& other) const{
-        if(this->cols != other.GetRows()){
+    Matrix IdentityMatrix::Multiply(const Matrix& other) const{
+        if(this->cols != other.Rows()){
             throw std::length_error("dimension mismatch"); // Checks for a required condition
         }
         return other;
