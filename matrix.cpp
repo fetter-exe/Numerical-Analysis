@@ -486,6 +486,11 @@
         std::vector<std::vector<double>> pData(n,std::vector<double>(n,0));
         std::vector<std::vector<double>> aData(this->data), lData(pData), uData(pData);
 
+        // This algorithm was adapted from the book "Algoritmos Numéricos",
+        // by professor Frederico Ferreira Campos filho, Ph.D.
+        // All rights reserved. You can find more info about him and his work at
+        // http://www2.dcc.ufmg.br/livros/algoritmosnumericos/
+
         for(unsigned int i = 0; i < n; ++i){
             pivot[i] = i;
         }
