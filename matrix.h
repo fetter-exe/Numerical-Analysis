@@ -42,9 +42,6 @@ class Matrix{
     unsigned int GetCols() const;
     // Returns the number of cols
 
-    Matrix operator=(const Matrix& other) = delete;
-    // Prevents Matrix data from being changed by the assignment operator
-
     double operator()(const unsigned int& I, const unsigned int& J) const;
     // Returns the Matrix's element indexed by row I and col J
 
@@ -151,4 +148,4 @@ class VandermondeMatrix : public Matrix{
 };
 
 
-#endif // _MATRIX_H_S
+#endif // _MATRIX_H_
