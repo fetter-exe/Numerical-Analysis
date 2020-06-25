@@ -72,6 +72,12 @@ class Matrix{
     virtual Matrix operator*(const double& scalar) const;
     // Returns the result of a matrix scalar multiplication
 
+    virtual bool IsEqual(const Matrix& other) const;
+    // Compares the content between two Matrix
+
+    virtual bool operator==(const Matrix& other) const;
+    // Compares the content between two Matrix
+
     friend Matrix operator*(const double& scalar, const Matrix& matrix);
     // Returns the result of a matrix scalar multiplication
 

@@ -168,6 +168,25 @@
         return Multiply(scalar);
     }
 
+    bool Matrix::IsEqual(const Matrix& other) const{
+        if(this->rows != other.rows || this->cols != other.cols){
+            return false;
+        }
+        for(unsigned int i=0; i<rows; ++i){
+            for(unsigned int j=0; j<cols; ++j){
+                if(data[i][j] != other.data[i][j]){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    bool Matrix::operator==(const Matrix& other) const{
+        return IsEqual(other);
+    }
+
+
     Matrix operator*(const double& scalar, const Matrix& matrix){
         return matrix*scalar;
     }
