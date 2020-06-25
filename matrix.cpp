@@ -476,7 +476,7 @@
         return inv;
     }
 
-    void Matrix::LU(Matrix& L, Matrix& U, Matrix& P) const{
+    Decomposition Matrix::LU() const{
         if(this->rows != this->cols){
             throw std::length_error("only square matrixes can use the LU Decomposition");
         }
@@ -531,10 +531,7 @@
             pData[i][pivot[i]] = 1;
         }
 
-        L.data = lData; U.data = uData; P.data = pData;
-        L.rows = lData.size(); L.cols = lData[0].size();
-        U.rows = uData.size(); U.cols = uData[0].size();
-        P.rows = pData.size(); P.cols = pData[0].size();
+        return Decomposition("lu", Matrix(lData), Matrix(uData), Matrix(pData));
     }
 
     Matrix::~Matrix(){}
@@ -569,7 +566,7 @@
     }
 
     Matrix IdentityMatrix::Multiply(const Matrix& other) const{
-        if(this->cols != other.Rows()){
+        if(this->cols != other.GetRows()){
             throw std::length_error("dimension mismatch"); // Checks for a required condition
         }
         return other;
@@ -623,3 +620,32 @@
     }
 
     VandermondeMatrix::~VandermondeMatrix(){}
+
+
+    // Decomposition struct implementation
+    Decomposition::Decomposition() // default constructor
+        : lower(Matrix(0,0)), upper(Matrix(0,0)), pivot(Matrix(0,0)), lower_transpose(Matrix(0,0)), diagonal(Matrix(0,0))
+    {}
+
+    Decomposition::Decomposition(const char* decomp, const Matrix& lower, const Matrix& lower_transpose) // cholesky
+        : lower(Matrix(0,0)), upper(Matrix(0,0)), pivot(Matrix(0,0)), lower_transpose(Matrix(0,0)), diagonal(Matrix(0,0))
+    {
+        if(std::string(decomp) == "chol" || std::string(decomp) == "cholesky"){
+            this->lower = lower; this->lower_transpose = lower_transpose;
+        }
+    }
+
+    Decomposition::Decomposition(const char* decomp, const Matrix& lower, const Matrix& upper_or_lower_transpose, const Matrix& pivot_or_diagonal) // lu / ldlt
+        : lower(Matrix(0,0)), upper(Matrix(0,0)), pivot(Matrix(0,0)), lower_transpose(Matrix(0,0)), diagonal(Matrix(0,0))
+    {
+        if(std::string(decomp) == "lu" || std::string(decomp) == "palu"){
+            this->lower = lower; this->upper = upper_or_lower_transpose; this->pivot = pivot_or_diagonal;
+        }
+        else if(std::string(decomp) == "ldlt"){
+            this->lower = lower; this->diagonal = pivot_or_diagonal; this->lower_transpose = upper_or_lower_transpose;
+        }
+    }
+
+    Decomposition::Decomposition(const Matrix& lower, const Matrix& upper, const Matrix& pivot, const Matrix& lower_transpose, const Matrix& diagonal)
+        : lower(lower), upper(upper), pivot(pivot), lower_transpose(lower_transpose), diagonal(diagonal)
+    {}
