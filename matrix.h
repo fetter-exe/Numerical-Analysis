@@ -147,5 +147,12 @@ class VandermondeMatrix : public Matrix{
     ~VandermondeMatrix();
 };
 
+struct Decomposition{
+    Matrix l, u, p, lt, d;
+    Decomposition();
+    Decomposition(std::string& decomp, const Matrix& l, const Matrix& lt); // cholesky
+    Decomposition(std::string& decomp, const Matrix& l, const Matrix& ult, const Matrix& pd); // lu / ldlt
+    Decomposition(const Matrix& l, const Matrix& u, const Matrix& p, const Matrix& lt, const Matrix& d);
+};
 
 #endif // _MATRIX_H_

@@ -569,7 +569,7 @@
     }
 
     Matrix IdentityMatrix::Multiply(const Matrix& other) const{
-        if(this->cols != other.Rows()){
+        if(this->cols != other.GetRows()){
             throw std::length_error("dimension mismatch"); // Checks for a required condition
         }
         return other;
@@ -623,3 +623,32 @@
     }
 
     VandermondeMatrix::~VandermondeMatrix(){}
+
+
+    // Decomposition struct implementation
+    Decomposition::Decomposition() // default constructor
+        : l(Matrix(0,0)), u(Matrix(0,0)), p(Matrix(0,0)), lt(Matrix(0,0)), d(Matrix(0,0))
+    {}
+
+    Decomposition::Decomposition(std::string& decomp, const Matrix& l, const Matrix& lt) // cholesky
+        : l(Matrix(0,0)), u(Matrix(0,0)), p(Matrix(0,0)), lt(Matrix(0,0)), d(Matrix(0,0))
+    {
+        if(decomp == "chol" || decomp == "cholesky"){
+            this->l = l; this->lt = lt;
+        }
+    }
+
+    Decomposition::Decomposition(std::string& decomp, const Matrix& l, const Matrix& ult, const Matrix& pd) // lu / ldlt
+        : l(Matrix(0,0)), u(Matrix(0,0)), p(Matrix(0,0)), lt(Matrix(0,0)), d(Matrix(0,0))
+    {
+        if(decomp == "lu" || decomp == "palu"){
+            this->l = l; this->u = ult; this->p = pd;
+        }
+        else if(decomp == "ldlt"){
+            this->l = l; this->d = pd; this->lt = ult;
+        }
+    }
+
+    Decomposition::Decomposition(const Matrix& l, const Matrix& u, const Matrix& p, const Matrix& lt, const Matrix& d)
+        : l(l), u(u), p(p), lt(lt), d(d)
+    {}
