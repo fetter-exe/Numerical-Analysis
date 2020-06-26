@@ -16,7 +16,7 @@ class Matrix{
 
     // Protected constructors
     Matrix();
-    // Required for the IdentityMatrix's constructors
+    // Required for the derived class constructors
 
   public:
 
@@ -43,6 +43,21 @@ class Matrix{
 
     unsigned int GetCols() const;
     // Returns the number of cols
+
+    Matrix operator=(const Matrix& other) = delete;
+    // Prevents Matrix data from being changed by the assignment operator
+
+    virtual bool IsEqual(const Matrix& other) const;
+    // Compares the content between two Matrix
+
+    virtual bool operator==(const Matrix& other) const;
+    // Compares the content between two Matrix
+
+    virtual bool IsDifferent(const Matrix& other) const;
+    // Compares the content between two Matrix
+    
+    virtual bool operator!=(const Matrix& other) const;
+    // Compares the content between two Matrix
 
     double operator()(const unsigned int& I, const unsigned int& J) const;
     // Returns the Matrix's element indexed by row I and col J
@@ -71,18 +86,17 @@ class Matrix{
     virtual Matrix operator*(const double& scalar) const;
     // Returns the result of a matrix scalar multiplication
 
-    virtual bool IsEqual(const Matrix& other) const;
-    // Compares the content between two Matrix
-
-    virtual bool operator==(const Matrix& other) const;
-    // Compares the content between two Matrix
-
     friend Matrix operator*(const double& scalar, const Matrix& matrix);
     // Returns the result of a matrix scalar multiplication
 
-    void ShowContent();
+    virtual Matrix Divide(const Matrix& other) const;
+    // Returns the result of a multiplication matrix operation
 
-    void ShowMatrix();
+    virtual Matrix operator/(const Matrix& other) const;
+    // Returns the result of a multiplication matrix operation
+
+    void Print() const;
+    // Prints the Matrix's content
 
     bool IsNull() const;
     // Checks if a matrix is Null/Zero
@@ -113,6 +127,8 @@ class Matrix{
 
     virtual ~Matrix();
 };
+
+  std::ostream& operator<<(std::ostream& os, const Matrix& matrix);
 
 class IdentityMatrix : public Matrix{
   public:
