@@ -4,6 +4,7 @@
 #include <time.h>    // time;
 #include <memory>    // unique_ptr
 #include <cmath>     // pow()
+#include <iomanip>   // setprecision()
 
     // Matrix implementation
     Matrix::Matrix(){}
@@ -89,6 +90,42 @@
     unsigned int Matrix::GetCols() const{
         return this->cols;
     }
+    
+    bool Matrix::IsEqual(const Matrix& other) const{
+        if(this->rows != other.rows || this->cols != other.cols){
+            return false;
+        }
+        for(unsigned int i=0; i<rows; ++i){
+            for(unsigned int j=0; j<cols; ++j){
+                if(data[i][j] != other.data[i][j]){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    bool Matrix::operator==(const Matrix& other) const{
+        return IsEqual(other);
+    }
+
+    bool Matrix::IsDifferent(const Matrix& other) const{
+        if(this->rows != other.rows || this->cols != other.cols){
+            return true;
+        }
+        for(unsigned int i=0; i<rows; ++i){
+            for(unsigned int j=0; j<cols; ++j){
+                if(data[i][j] != other.data[i][j]){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    bool Matrix::operator!=(const Matrix& other) const{
+        return IsDifferent(other);
+    }
 
     double Matrix::operator()(const unsigned int& I, const unsigned int& J) const{
         if(I > this->rows || J > this->rows){
@@ -168,44 +205,16 @@
         return Multiply(scalar);
     }
 
-    bool Matrix::IsEqual(const Matrix& other) const{
-        if(this->rows != other.rows || this->cols != other.cols){
-            return false;
-        }
-        for(unsigned int i=0; i<rows; ++i){
-            for(unsigned int j=0; j<cols; ++j){
-                if(data[i][j] != other.data[i][j]){
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    bool Matrix::operator==(const Matrix& other) const{
-        return IsEqual(other);
-    }
-
-
     Matrix operator*(const double& scalar, const Matrix& matrix){
         return matrix*scalar;
     }
 
-    void Matrix::ShowContent(){
-        for(unsigned int i=0; i<rows; ++i){
-            for(unsigned int j=0; j<cols; ++j){
-                std::cout<<"data["<<i<<"]["<<j<<"]: "<<data[i][j]<<std::endl;
-            }
-        }
+    Matrix Matrix::Divide(const Matrix& other) const{
+        return (this->Multiply(other.Inverse()));
     }
 
-    void Matrix::ShowMatrix(){
-        for(unsigned int i = 0; i < rows; ++i){
-            for(unsigned int j = 0; j < cols; ++j){
-                std::cout << data[i][j] << " ";
-            }
-            std::cout << std::endl;
-        }
+    Matrix Matrix::operator/(const Matrix& other) const{
+        return Divide(other);
     }
 
     bool Matrix::IsNull() const{
@@ -537,6 +546,20 @@
         P.rows = pData.size(); P.cols = pData[0].size();
     }
 
+    void Matrix::Print() const{
+        for(unsigned int i = 0; i < rows; ++i){
+            for(unsigned int j = 0; j < cols; ++j){
+                std::cout << data[i][j] << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
+    std::ostream& operator<<(std::ostream& stream, const Matrix& matrix){
+        matrix.Print();
+        return stream;
+    }
+
     Matrix::~Matrix(){}
 
 
@@ -569,7 +592,7 @@
     }
 
     Matrix IdentityMatrix::Multiply(const Matrix& other) const{
-        if(this->cols != other.Rows()){
+        if(this->cols != other.GetRows()){
             throw std::length_error("dimension mismatch"); // Checks for a required condition
         }
         return other;
