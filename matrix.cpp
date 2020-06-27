@@ -276,91 +276,46 @@
     }
 
     double Matrix::Determinant() const{
-        // Ensures only square matrixes can use this method
-        if(rows != cols){
+        if(GetRows() != GetCols()){ //Ensures only square matrixes can use this method
             throw std::length_error("non-square matrixes can't have a determinant");
         }
 
-        double det = 1, total = 1;
-        unsigned int idx, n = rows;
-        std::vector<double> temp(rows);
-        std::vector<std::vector<double>> mat = data;
+        std::vector<std::vector<double>> aData = this->data;
+        unsigned int n = GetRows();
+        double det = 1;
+        int sign = 1;
 
-        if(IsNull()){ // Optimizes for Null/Zero matrixes
-            det = 0;
-            return det;
+        if(IsNull()){ //Optimizes for Null/Zero matrixes
+            return 0;
         }
-        if(IsDiagonal() || IsTriangular()){ // Optimizes for diagonal/triangular matrixes
+        if(IsDiagonal() || IsTriangular()){ //Optimizes for diagonal/triangular matrixes
             for(unsigned int k = 0; k < n; ++k){
-                det *= mat[k][k];
+                det *= aData[k][k];
             }
             return det;
         }
 
-        if(n == 1){ // Optimizes for small matrixes
-            det = data[0][0];
-            return det;
-        }else if(n == 2){
-            det = data[0][0]*data[1][1] - data[0][1]*data[1][0];
+        if(n == 1){ //Optimizes for small matrixes
+            return aData[0][0];
+        }
+        else if(n == 2){
+            det = aData[0][0]*aData[1][1] - aData[0][1]*aData[1][0];
             return det;
         }
         else if(n == 3){
-            det = 0;
-            det += data[0][0] * (data[1][1]*data[2][2] - data[1][2]*data[2][1]);
-            det -= data[0][1] * (data[1][0]*data[2][2] - data[1][2]*data[2][0]);
-            det += data[0][2] * (data[1][0]*data[2][1] - data[1][1]*data[2][0]);
+            det = aData[0][0] * (aData[1][1]*aData[2][2] - aData[1][2]*aData[2][1]);
+            det -= aData[0][1] * (aData[1][0]*aData[2][2] - aData[1][2]*aData[2][0]);
+            det += aData[0][2] * (aData[1][0]*aData[2][1] - aData[1][1]*aData[2][0]);
             return det;
         }
 
-        // Loop for traversing diagonal elements
-        for(unsigned int k = 0; k < n; ++k){
-            idx = k;
-
-            // Finding the index that has a non-zero value
-            while(mat[idx][k] == 0  &&  idx < n){
-                ++idx;
-            }
-
-            // If there is non-zero element
-            if(idx == n){
-                continue; // The determinant of matrix as zero
-            }
-
-            if(idx != k){
-                // Loop for swaping the index row and diagonal row
-                for(unsigned int j = 0; j < n; ++j){
-                    std::swap(mat[idx][j], mat[k][j]);
-                }
-                // Determinant changes sign when shifting rows
-                det *= pow(-1, idx-k);
-            }
-
-            // Storing the values of the diagonal row elements
-            for(unsigned int j = 0; j < n; ++j){
-                temp[j] = mat[k][j];
-            }
-
-            // Traversing every row below the diagonal element
-            for(unsigned int i = k+1; i < n; ++i){
-                double diag_el = temp[k]; // Value of diagonal element
-                double nxtr_el = mat[i][k]; // Value of next row element
-
-                // Traversing every column of row and multiplying to every row
-                for(unsigned int j = 0; j < n; ++j){
-                    // Multiplying to make diagonal and next row elements equal
-                    mat[i][j] = (diag_el * mat[i][j]) - (nxtr_el * temp[j]);
-                }
-
-                total *= diag_el; // det(kA) = k * det(A)
-            }
+        det = 0; //Laplace Expansion, this is a recursive method
+        for(unsigned int j = 0; j < n; ++j){
+            det += sign * aData[0][j] * SubMatrix(0,j).Determinant();
+            sign *= -1;
         }
 
-        // Multiplying the diagonal elements to get determinant
-        for(unsigned int k = 0; k < n; ++k){
-            det *= mat[k][k];
-        }
-
-        return (det/total); // det(A) = det(kA) / k
+        return det;
     }
 
     Matrix Matrix::SubMatrix(int i, int j) const{
