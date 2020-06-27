@@ -44,9 +44,6 @@ class Matrix{
     unsigned int GetCols() const;
     // Returns the number of cols
 
-    Matrix operator=(const Matrix& other) = delete;
-    // Prevents Matrix data from being changed by the assignment operator
-
     virtual bool IsEqual(const Matrix& other) const;
     // Compares the content between two Matrix
 
@@ -95,9 +92,6 @@ class Matrix{
     virtual Matrix operator/(const Matrix& other) const;
     // Returns the result of a multiplication matrix operation
 
-    void Print() const;
-    // Prints the Matrix's content
-
     bool IsNull() const;
     // Checks if a matrix is Null/Zero
 
@@ -124,6 +118,9 @@ class Matrix{
 
     Decomposition LU() const;
     // LU Decomposition with partial pivoting (PA = LU)
+
+    void Print() const;
+    // Prints the Matrix's content
 
     virtual ~Matrix();
 };
