@@ -280,17 +280,17 @@
             throw std::length_error("non-square matrixes can't have a determinant");
         }
 
-        std::vector<std::vector<double>> aData = this->data;
-        unsigned int n = GetRows();
         double det = 1;
-        int sign = 1;
+        unsigned int n = GetRows();
+        std::vector<double> pivot(n,0);
+        std::vector<std::vector<double>> aData = this->data;
 
         if(IsNull()){ //Optimizes for Null/Zero matrixes
             return 0;
         }
         if(IsDiagonal() || IsTriangular()){ //Optimizes for diagonal/triangular matrixes
-            for(unsigned int k = 0; k < n; ++k){
-                det *= aData[k][k];
+            for(unsigned int i = 0; i < n; ++i){
+                det *= aData[i][i];
             }
             return det;
         }
@@ -309,10 +309,32 @@
             return det;
         }
 
-        det = 0; //Laplace Expansion, this is a recursive method
-        for(unsigned int j = 0; j < n; ++j){
-            det += sign * aData[0][j] * SubMatrix(0,j).Determinant();
-            sign *= -1;
+        Decomposition decomp = LU();
+
+        for(unsigned int i = 0; i < n; ++i){ //Product of the diagonal elements of L and U
+            det *= decomp.lower.data[i][i] * decomp.upper.data[i][i];
+        }
+        if(det != 0){ //Finds how many row swaps, and thus determines the determinant sign
+            bool isInOrder = false;
+            unsigned int swaps = 0;
+            for(unsigned int i = 0; i < n; ++i){
+                for(unsigned int j = 0; j < n; ++j){
+                    if(decomp.pivot.data[i][j] == 1){
+                        pivot[i] = j;
+                    }
+                }
+            }
+            while(!isInOrder){
+                isInOrder = true;
+                for(unsigned int i = 0; i < (n-1); ++i){
+                    if(pivot[i] > pivot[i+1]){
+                        isInOrder = false;
+                        std::swap(pivot[i],pivot[i+1]);
+                        ++swaps;
+                    }
+                }
+            }
+            det *= std::pow(-1,swaps);
         }
 
         return det;
