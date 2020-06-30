@@ -276,91 +276,78 @@
     }
 
     double Matrix::Determinant() const{
-        // Ensures only square matrixes can use this method
-        if(rows != cols){
+        if(GetRows() != GetCols()){ //Ensures only square matrixes can use this method
             throw std::length_error("non-square matrixes can't have a determinant");
         }
 
-        double det = 1, total = 1;
-        unsigned int idx, n = rows;
-        std::vector<double> temp(rows);
-        std::vector<std::vector<double>> mat = data;
+        double det = 1;
+        unsigned int n = GetRows();
+        std::vector<double> pivot(n,0);
+        std::vector<std::vector<double>> aData = this->data;
 
-        if(IsNull()){ // Optimizes for Null/Zero matrixes
-            det = 0;
-            return det;
+        if(IsNull()){ //Optimizes for Null/Zero matrixes
+            return 0;
         }
-        if(IsDiagonal() || IsTriangular()){ // Optimizes for diagonal/triangular matrixes
-            for(unsigned int k = 0; k < n; ++k){
-                det *= mat[k][k];
+        if(IsDiagonal() || IsTriangular()){ //Optimizes for diagonal/triangular matrixes
+            for(unsigned int i = 0; i < n; ++i){
+                det *= aData[i][i];
             }
             return det;
         }
 
-        if(n == 1){ // Optimizes for small matrixes
-            det = data[0][0];
-            return det;
-        }else if(n == 2){
-            det = data[0][0]*data[1][1] - data[0][1]*data[1][0];
+        if(n == 1){ //Optimizes for small matrixes
+            return aData[0][0];
+        }
+        else if(n == 2){
+            det = aData[0][0]*aData[1][1] - aData[0][1]*aData[1][0];
             return det;
         }
         else if(n == 3){
-            det = 0;
-            det += data[0][0] * (data[1][1]*data[2][2] - data[1][2]*data[2][1]);
-            det -= data[0][1] * (data[1][0]*data[2][2] - data[1][2]*data[2][0]);
-            det += data[0][2] * (data[1][0]*data[2][1] - data[1][1]*data[2][0]);
+            det = aData[0][0] * (aData[1][1]*aData[2][2] - aData[1][2]*aData[2][1]);
+            det -= aData[0][1] * (aData[1][0]*aData[2][2] - aData[1][2]*aData[2][0]);
+            det += aData[0][2] * (aData[1][0]*aData[2][1] - aData[1][1]*aData[2][0]);
             return det;
         }
 
-        // Loop for traversing diagonal elements
-        for(unsigned int k = 0; k < n; ++k){
-            idx = k;
+        // This algorithm was adapted from the book "Algoritmos Numéricos",
+        // by professor Frederico Ferreira Campos filho, Ph.D.
+        // All rights reserved. You can find more info about him and his work at
+        // http://www2.dcc.ufmg.br/livros/algoritmosnumericos/
 
-            // Finding the index that has a non-zero value
-            while(mat[idx][k] == 0  &&  idx < n){
-                ++idx;
-            }
-
-            // If there is non-zero element
-            if(idx == n){
-                continue; // The determinant of matrix as zero
-            }
-
-            if(idx != k){
-                // Loop for swaping the index row and diagonal row
-                for(unsigned int j = 0; j < n; ++j){
-                    std::swap(mat[idx][j], mat[k][j]);
+        for(unsigned int i = 0; i < n; ++i){
+            pivot[i] = i;
+        }
+        for(unsigned int j = 0; j < (n-1); ++j){
+            unsigned int p = j;
+            double aMax = std::abs(aData[j][j]);
+            for(unsigned int k = (j+1); k < n; ++k){
+                if(std::abs(aData[k][j]) > aMax){
+                    aMax = std::abs(aData[k][j]);
+                    p = k;
                 }
-                // Determinant changes sign when shifting rows
-                det *= pow(-1, idx-k);
             }
-
-            // Storing the values of the diagonal row elements
-            for(unsigned int j = 0; j < n; ++j){
-                temp[j] = mat[k][j];
-            }
-
-            // Traversing every row below the diagonal element
-            for(unsigned int i = k+1; i < n; ++i){
-                double diag_el = temp[k]; // Value of diagonal element
-                double nxtr_el = mat[i][k]; // Value of next row element
-
-                // Traversing every column of row and multiplying to every row
-                for(unsigned int j = 0; j < n; ++j){
-                    // Multiplying to make diagonal and next row elements equal
-                    mat[i][j] = (diag_el * mat[i][j]) - (nxtr_el * temp[j]);
+            if(p != j){
+                for(unsigned int k = 0; k < n; ++k){
+                    std::swap(aData[j][k],aData[p][k]);
                 }
-
-                total *= diag_el; // det(kA) = k * det(A)
+                std::swap(pivot[j],pivot[p]);
+                det *= -1;
+            }
+            det *= aData[j][j];
+            if(std::abs(aData[j][j]) != 0){
+                double r = 1/aData[j][j];
+                for(unsigned int i = (j+1); i < n; ++i){
+                    double mult = r * aData[i][j];
+                    aData[i][j] = mult;
+                    for(unsigned int k = (j+1); k < n; ++k){
+                        aData[i][k] -= mult * aData[j][k];
+                    }
+                }
             }
         }
+        det *= aData[n-1][n-1];
 
-        // Multiplying the diagonal elements to get determinant
-        for(unsigned int k = 0; k < n; ++k){
-            det *= mat[k][k];
-        }
-
-        return (det/total); // det(A) = det(kA) / k
+        return det;
     }
 
     Matrix Matrix::SubMatrix(int i, int j) const{
@@ -485,69 +472,6 @@
         return inv;
     }
 
-    Decomposition Matrix::LU() const{
-        if(this->rows != this->cols){
-            throw std::length_error("only square matrixes can use the LU Decomposition");
-        }
-
-        unsigned int n = rows;
-        std::vector<unsigned int> pivot(n,0);
-        std::vector<std::vector<double>> pData(n,std::vector<double>(n,0));
-        std::vector<std::vector<double>> aData(this->data), lData(pData), uData(pData);
-
-        // This algorithm was adapted from the book "Algoritmos Numéricos",
-        // by professor Frederico Ferreira Campos filho, Ph.D.
-        // All rights reserved. You can find more info about him and his work at
-        // http://www2.dcc.ufmg.br/livros/algoritmosnumericos/
-
-        for(unsigned int i = 0; i < n; ++i){
-            pivot[i] = i;
-        }
-
-        for(unsigned int j = 0; j < (n-1); ++j){
-            unsigned int p = j;
-            double aMax = std::abs(aData[j][j]);
-            for(unsigned int k = (j+1); k < n; ++k){
-                if(std::abs(aData[k][j]) > aMax){
-                    aMax = std::abs(aData[k][j]);
-                    p = k;
-                }
-            }
-            if(p != j){
-                for(unsigned int k = 0; k < n; ++k){
-                    std::swap(aData[j][k],aData[p][k]);
-                }
-                std::swap(pivot[j],pivot[p]);
-            }
-            if(std::abs(aData[j][j]) != 0){
-                double r = 1/aData[j][j];
-                for(unsigned int i = (j+1); i < n; ++i){
-                    double mult = r * aData[i][j];
-                    aData[i][j] = mult;
-                    for(unsigned int k = (j+1); k < n; ++k){
-                        aData[i][k] -= mult * aData[j][k];
-                    }
-                }
-            }
-        }
-
-        for(unsigned int i = 0; i < n; ++i){
-            for(unsigned int j = 0; j < n; ++j){
-                if(i == j){
-                    lData[i][j] = 1;
-                    uData[i][j] = aData[i][j];
-                }else if(i > j){
-                    lData[i][j] = aData[i][j];
-                }else if(i < j){
-                    uData[i][j] = aData[i][j];
-                }
-            }
-            pData[i][pivot[i]] = 1;
-        }
-
-        return Decomposition("lu", Matrix(lData), Matrix(uData), Matrix(pData));
-    }
-
     void Matrix::Print() const{
         for(unsigned int i = 0; i < rows; ++i){
             for(unsigned int j = 0; j < cols; ++j){
@@ -648,32 +572,3 @@
     }
 
     VandermondeMatrix::~VandermondeMatrix(){}
-
-
-    // Decomposition struct implementation
-    Decomposition::Decomposition() // default constructor
-        : lower(Matrix(0,0)), upper(Matrix(0,0)), pivot(Matrix(0,0)), lower_transpose(Matrix(0,0)), diagonal(Matrix(0,0))
-    {}
-
-    Decomposition::Decomposition(const char* decomp, const Matrix& lower, const Matrix& lower_transpose) // cholesky
-        : lower(Matrix(0,0)), upper(Matrix(0,0)), pivot(Matrix(0,0)), lower_transpose(Matrix(0,0)), diagonal(Matrix(0,0))
-    {
-        if(std::string(decomp) == "chol" || std::string(decomp) == "cholesky"){
-            this->lower = lower; this->lower_transpose = lower_transpose;
-        }
-    }
-
-    Decomposition::Decomposition(const char* decomp, const Matrix& lower, const Matrix& upper_or_lower_transpose, const Matrix& pivot_or_diagonal) // lu / ldlt
-        : lower(Matrix(0,0)), upper(Matrix(0,0)), pivot(Matrix(0,0)), lower_transpose(Matrix(0,0)), diagonal(Matrix(0,0))
-    {
-        if(std::string(decomp) == "lu" || std::string(decomp) == "palu"){
-            this->lower = lower; this->upper = upper_or_lower_transpose; this->pivot = pivot_or_diagonal;
-        }
-        else if(std::string(decomp) == "ldlt"){
-            this->lower = lower; this->diagonal = pivot_or_diagonal; this->lower_transpose = upper_or_lower_transpose;
-        }
-    }
-
-    Decomposition::Decomposition(const Matrix& lower, const Matrix& upper, const Matrix& pivot, const Matrix& lower_transpose, const Matrix& diagonal)
-        : lower(lower), upper(upper), pivot(pivot), lower_transpose(lower_transpose), diagonal(diagonal)
-    {}
