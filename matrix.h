@@ -4,8 +4,6 @@
 #include  <iostream>
 #include  <vector>
 
-struct Decomposition;
-
 class Matrix{
   protected:
 
@@ -116,9 +114,6 @@ class Matrix{
     Matrix Inverse() const;
     // Returns the Inverse of the matrix
 
-    Decomposition LU() const;
-    // LU Decomposition with partial pivoting (PA = LU)
-
     void Print() const;
     // Prints the Matrix's content
 
@@ -160,14 +155,6 @@ class VandermondeMatrix : public Matrix{
     // Returns the matrix's determinant through optimized calculation methods.
 
     ~VandermondeMatrix();
-};
-
-struct Decomposition{
-    Matrix lower, upper, pivot, lower_transpose, diagonal;
-    Decomposition();
-    Decomposition(const char* decomp, const Matrix& lower, const Matrix& lower_transpose); // cholesky
-    Decomposition(const char* decomp, const Matrix& lower, const Matrix& upper_or_lower_transpose, const Matrix& pivot_or_diagonal); // lu / ldlt
-    Decomposition(const Matrix& lower, const Matrix& upper, const Matrix& pivot, const Matrix& lower_transpose, const Matrix& diagonal);
 };
 
 #endif // _MATRIX_H_

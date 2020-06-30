@@ -472,69 +472,6 @@
         return inv;
     }
 
-    Decomposition Matrix::LU() const{
-        if(this->rows != this->cols){
-            throw std::length_error("only square matrixes can use the LU Decomposition");
-        }
-
-        unsigned int n = rows;
-        std::vector<unsigned int> pivot(n,0);
-        std::vector<std::vector<double>> pData(n,std::vector<double>(n,0));
-        std::vector<std::vector<double>> aData(this->data), lData(pData), uData(pData);
-
-        // This algorithm was adapted from the book "Algoritmos Numéricos",
-        // by professor Frederico Ferreira Campos filho, Ph.D.
-        // All rights reserved. You can find more info about him and his work at
-        // http://www2.dcc.ufmg.br/livros/algoritmosnumericos/
-
-        for(unsigned int i = 0; i < n; ++i){
-            pivot[i] = i;
-        }
-
-        for(unsigned int j = 0; j < (n-1); ++j){
-            unsigned int p = j;
-            double aMax = std::abs(aData[j][j]);
-            for(unsigned int k = (j+1); k < n; ++k){
-                if(std::abs(aData[k][j]) > aMax){
-                    aMax = std::abs(aData[k][j]);
-                    p = k;
-                }
-            }
-            if(p != j){
-                for(unsigned int k = 0; k < n; ++k){
-                    std::swap(aData[j][k],aData[p][k]);
-                }
-                std::swap(pivot[j],pivot[p]);
-            }
-            if(std::abs(aData[j][j]) != 0){
-                double r = 1/aData[j][j];
-                for(unsigned int i = (j+1); i < n; ++i){
-                    double mult = r * aData[i][j];
-                    aData[i][j] = mult;
-                    for(unsigned int k = (j+1); k < n; ++k){
-                        aData[i][k] -= mult * aData[j][k];
-                    }
-                }
-            }
-        }
-
-        for(unsigned int i = 0; i < n; ++i){
-            for(unsigned int j = 0; j < n; ++j){
-                if(i == j){
-                    lData[i][j] = 1;
-                    uData[i][j] = aData[i][j];
-                }else if(i > j){
-                    lData[i][j] = aData[i][j];
-                }else if(i < j){
-                    uData[i][j] = aData[i][j];
-                }
-            }
-            pData[i][pivot[i]] = 1;
-        }
-
-        return Decomposition("lu", Matrix(lData), Matrix(uData), Matrix(pData));
-    }
-
     void Matrix::Print() const{
         for(unsigned int i = 0; i < rows; ++i){
             for(unsigned int j = 0; j < cols; ++j){
@@ -635,32 +572,3 @@
     }
 
     VandermondeMatrix::~VandermondeMatrix(){}
-
-
-    // Decomposition struct implementation
-    Decomposition::Decomposition() // default constructor
-        : lower(Matrix(0,0)), upper(Matrix(0,0)), pivot(Matrix(0,0)), lower_transpose(Matrix(0,0)), diagonal(Matrix(0,0))
-    {}
-
-    Decomposition::Decomposition(const char* decomp, const Matrix& lower, const Matrix& lower_transpose) // cholesky
-        : lower(Matrix(0,0)), upper(Matrix(0,0)), pivot(Matrix(0,0)), lower_transpose(Matrix(0,0)), diagonal(Matrix(0,0))
-    {
-        if(std::string(decomp) == "chol" || std::string(decomp) == "cholesky"){
-            this->lower = lower; this->lower_transpose = lower_transpose;
-        }
-    }
-
-    Decomposition::Decomposition(const char* decomp, const Matrix& lower, const Matrix& upper_or_lower_transpose, const Matrix& pivot_or_diagonal) // lu / ldlt
-        : lower(Matrix(0,0)), upper(Matrix(0,0)), pivot(Matrix(0,0)), lower_transpose(Matrix(0,0)), diagonal(Matrix(0,0))
-    {
-        if(std::string(decomp) == "lu" || std::string(decomp) == "palu"){
-            this->lower = lower; this->upper = upper_or_lower_transpose; this->pivot = pivot_or_diagonal;
-        }
-        else if(std::string(decomp) == "ldlt"){
-            this->lower = lower; this->diagonal = pivot_or_diagonal; this->lower_transpose = upper_or_lower_transpose;
-        }
-    }
-
-    Decomposition::Decomposition(const Matrix& lower, const Matrix& upper, const Matrix& pivot, const Matrix& lower_transpose, const Matrix& diagonal)
-        : lower(lower), upper(upper), pivot(pivot), lower_transpose(lower_transpose), diagonal(diagonal)
-    {}
