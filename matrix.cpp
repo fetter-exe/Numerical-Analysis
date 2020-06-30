@@ -309,33 +309,43 @@
             return det;
         }
 
-        Decomposition decomp = LU();
+        // This algorithm was adapted from the book "Algoritmos Numéricos",
+        // by professor Frederico Ferreira Campos filho, Ph.D.
+        // All rights reserved. You can find more info about him and his work at
+        // http://www2.dcc.ufmg.br/livros/algoritmosnumericos/
 
-        for(unsigned int i = 0; i < n; ++i){ //Product of the diagonal elements of L and U
-            det *= decomp.lower.data[i][i] * decomp.upper.data[i][i];
+        for(unsigned int i = 0; i < n; ++i){
+            pivot[i] = i;
         }
-        if(det != 0){ //Finds how many row swaps, and thus determines the determinant sign
-            bool isInOrder = false;
-            unsigned int swaps = 0;
-            for(unsigned int i = 0; i < n; ++i){
-                for(unsigned int j = 0; j < n; ++j){
-                    if(decomp.pivot.data[i][j] == 1){
-                        pivot[i] = j;
+        for(unsigned int j = 0; j < (n-1); ++j){
+            unsigned int p = j;
+            double aMax = std::abs(aData[j][j]);
+            for(unsigned int k = (j+1); k < n; ++k){
+                if(std::abs(aData[k][j]) > aMax){
+                    aMax = std::abs(aData[k][j]);
+                    p = k;
+                }
+            }
+            if(p != j){
+                for(unsigned int k = 0; k < n; ++k){
+                    std::swap(aData[j][k],aData[p][k]);
+                }
+                std::swap(pivot[j],pivot[p]);
+                det *= -1;
+            }
+            det *= aData[j][j];
+            if(std::abs(aData[j][j]) != 0){
+                double r = 1/aData[j][j];
+                for(unsigned int i = (j+1); i < n; ++i){
+                    double mult = r * aData[i][j];
+                    aData[i][j] = mult;
+                    for(unsigned int k = (j+1); k < n; ++k){
+                        aData[i][k] -= mult * aData[j][k];
                     }
                 }
             }
-            while(!isInOrder){
-                isInOrder = true;
-                for(unsigned int i = 0; i < (n-1); ++i){
-                    if(pivot[i] > pivot[i+1]){
-                        isInOrder = false;
-                        std::swap(pivot[i],pivot[i+1]);
-                        ++swaps;
-                    }
-                }
-            }
-            det *= std::pow(-1,swaps);
         }
+        det *= aData[n-1][n-1];
 
         return det;
     }
