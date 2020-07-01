@@ -541,6 +541,14 @@
         return 1.0;
     }
 
+    Matrix IdentityMatrix::Transpose() const{
+        return IdentityMatrix(this->rows);
+    }
+
+    Matrix IdentityMatrix::Inverse() const{
+        return IdentityMatrix(this->rows);
+    }
+
     IdentityMatrix::~IdentityMatrix(){}
 
 
