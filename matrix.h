@@ -20,20 +20,23 @@ class Matrix{
 
     // Public constructors
     Matrix(const Matrix& other);
-    // Instanciates a Matrix from a copy constructor
+    // Instantiates a Matrix from a copy constructor
 
     Matrix(std::vector<std::vector<double>>& inputData);
-    // Instanciates a Matrix from a two dimension vector of double
+    // Instantiates a Matrix from a two dimension vector of double
 
-    Matrix(int numberOfRows,int numberOfCols);
-    // Instanciates a Matrix with random positive numbers
+    Matrix(int numberOfRows, int numberOfCols);
+    // Instantiates a Matrix with random positive numbers
 
-    Matrix(int numberOfRows,int numberOfCols, double minLimit, double maxLimit);
-    // Instanciates a Matrix with random positive numbers 
+    Matrix(int numberOfRows, int numberOfCols, double minLimit, double maxLimit);
+    // Instantiates a Matrix with random positive numbers
     // between the arguments minLimit and maxLimit
 
     Matrix(int numberOfRows, int numberOfCols, std::string elements);
-    // Instanciates a Matrix using the data from a string
+    // Instantiates a Matrix using the data from a string
+
+    Matrix(int numberOfRows, int numberOfCols, double value);
+    // Instantiates a Matrix where each element is a copy of 'value'
 
     // Public methods
     unsigned int GetRows() const;
