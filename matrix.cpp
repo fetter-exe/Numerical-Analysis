@@ -27,7 +27,7 @@
         }
     }
 
-    Matrix::Matrix(int numberOfRows,int numberOfCols){
+    Matrix::Matrix(int numberOfRows, int numberOfCols){
         if(numberOfRows < 0 || numberOfCols < 0){
             throw std::invalid_argument("negative arguments are not allowed");
         }
@@ -42,7 +42,7 @@
         }
     }
 
-    Matrix::Matrix(int numberOfRows,int numberOfCols, double minLimit, double maxLimit){
+    Matrix::Matrix(int numberOfRows, int numberOfCols, double minLimit, double maxLimit){
         if(numberOfRows < 0 || numberOfCols < 0){
             throw std::invalid_argument("negative arguments are not allowed");
         }
@@ -81,6 +81,12 @@
                 }
             }
         }
+    }
+
+    Matrix::Matrix(int numberOfRows, int numberOfCols, double value){
+        this->rows = numberOfRows;
+        this->cols = numberOfCols;
+        this->data = std::vector<std::vector<double>>(rows,std::vector<double>(cols,value));
     }
 
     unsigned int Matrix::GetRows() const{
