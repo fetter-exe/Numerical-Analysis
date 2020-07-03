@@ -96,15 +96,15 @@
         this->data = std::vector<std::vector<double>>(rows,std::vector<double>(cols,value));
     }
 
-    unsigned int Matrix::GetRows() const{
+    unsigned int Matrix::getRows() const{
         return this->rows;
     }
 
-    unsigned int Matrix::GetCols() const{
+    unsigned int Matrix::getCols() const{
         return this->cols;
     }
     
-    bool Matrix::IsEqual(const Matrix& other) const{
+    bool Matrix::isEqual(const Matrix& other) const{
         if(this->rows != other.rows || this->cols != other.cols){
             return false;
         }
@@ -119,10 +119,10 @@
     }
 
     bool Matrix::operator==(const Matrix& other) const{
-        return IsEqual(other);
+        return isEqual(other);
     }
 
-    bool Matrix::IsDifferent(const Matrix& other) const{
+    bool Matrix::isDifferent(const Matrix& other) const{
         if(this->rows != other.rows || this->cols != other.cols){
             return true;
         }
@@ -137,7 +137,7 @@
     }
 
     bool Matrix::operator!=(const Matrix& other) const{
-        return IsDifferent(other);
+        return isDifferent(other);
     }
 
     double Matrix::operator()(const unsigned int& I, const unsigned int& J) const{
@@ -147,7 +147,7 @@
         return this->data[I][J];
     }
 
-    Matrix Matrix::Add(const Matrix& other) const{
+    Matrix Matrix::add(const Matrix& other) const{
         if(this->rows != other.rows || this->cols != other.cols){
             throw std::length_error("dimension mismatch"); // Checks for a required condition
         }
@@ -161,10 +161,10 @@
     }
 
     Matrix Matrix::operator+(const Matrix& other) const{
-        return Add(other);
+        return add(other);
     }
 
-    Matrix Matrix::Subtract(const Matrix& other) const{
+    Matrix Matrix::subtract(const Matrix& other) const{
         if(this->rows != other.rows || this->cols != other.cols){
             throw std::length_error("dimension mismatch"); // Checks for a required condition
         }
@@ -178,10 +178,10 @@
     }
 
     Matrix Matrix::operator-(const Matrix& other) const{
-        return Subtract(other);
+        return subtract(other);
     }
 
-    Matrix Matrix::Multiply(const Matrix& other) const{
+    Matrix Matrix::multiply(const Matrix& other) const{
         if(this->cols != other.rows){
             throw std::length_error("dimension mismatch"); // Checks for a required condition
         }
@@ -201,10 +201,10 @@
     }
 
     Matrix Matrix::operator*(const Matrix& other) const{
-        return Multiply(other);
+        return multiply(other);
     }
 
-    Matrix Matrix::Multiply(const double& scalar) const{
+    Matrix Matrix::multiply(const double& scalar) const{
         std::unique_ptr<Matrix> returnedMatrix(new Matrix(this->rows, this->cols));
         for(unsigned int i=0; i<rows; ++i){
             for(unsigned int j=0; j<cols; ++j){
@@ -215,22 +215,22 @@
     }
 
     Matrix Matrix::operator*(const double& scalar) const{
-        return Multiply(scalar);
+        return multiply(scalar);
     }
 
     Matrix operator*(const double& scalar, const Matrix& matrix){
         return matrix*scalar;
     }
 
-    Matrix Matrix::Divide(const Matrix& other) const{
-        return (this->Multiply(other.Inverse()));
+    Matrix Matrix::divide(const Matrix& other) const{
+        return (this->multiply(other.inverse()));
     }
 
     Matrix Matrix::operator/(const Matrix& other) const{
-        return Divide(other);
+        return divide(other);
     }
 
-    bool Matrix::IsNull() const{
+    bool Matrix::isNull() const{
         for(unsigned int i = 0; i < rows; ++i){
             for(unsigned int j = 0; j < cols; ++j){
                 if(data[i][j] != 0){
@@ -241,8 +241,8 @@
         return true;
     }
 
-    bool Matrix::IsDiagonal() const{
-        if(IsNull()){
+    bool Matrix::isDiagonal() const{
+        if(isNull()){
             return false;
         }
         for(unsigned int i = 0; i < rows; ++i){
@@ -255,9 +255,9 @@
         return true;
     }
 
-    bool Matrix::IsTriangular() const{
+    bool Matrix::isTriangular() const{
         bool isTriang, isUpper = true, isLower = true;
-        if(rows != cols  ||  IsNull()){
+        if(rows != cols  ||  isNull()){
             return false;
         }
         for(unsigned int i = 0; i < rows; ++i){
@@ -274,7 +274,7 @@
         return isTriang;
     }
 
-    bool Matrix::IsSymmetric() const{
+    bool Matrix::isSymmetric() const{
         if(rows != cols){
             return false;
         }
@@ -288,20 +288,20 @@
         return true;
     }
 
-    double Matrix::Determinant() const{
-        if(GetRows() != GetCols()){ //Ensures only square matrixes can use this method
+    double Matrix::determinant() const{
+        if(getRows() != getCols()){ //Ensures only square matrixes can use this method
             throw std::length_error("non-square matrixes can't have a determinant");
         }
 
         double det = 1;
-        unsigned int n = GetRows();
+        unsigned int n = getRows();
         std::vector<double> pivot(n,0);
         std::vector<std::vector<double>> aData = this->data;
 
-        if(IsNull()){ //Optimizes for Null/Zero matrixes
+        if(isNull()){ //Optimizes for Null/Zero matrixes
             return 0;
         }
-        if(IsDiagonal() || IsTriangular()){ //Optimizes for diagonal/triangular matrixes
+        if(isDiagonal() || isTriangular()){ //Optimizes for diagonal/triangular matrixes
             for(unsigned int i = 0; i < n; ++i){
                 det *= aData[i][i];
             }
@@ -363,7 +363,7 @@
         return det;
     }
 
-    Matrix Matrix::SubMatrix(int i, int j) const{
+    Matrix Matrix::subMatrix(int i, int j) const{
         if((rows==1 || cols==1) && (i==0 || j==0)){
             return Matrix(0,0);
         }
@@ -401,7 +401,7 @@
         return Matrix(smData);
     }
 
-    Matrix Matrix::Transpose() const{
+    Matrix Matrix::transpose() const{
         std::vector<std::vector<double>> tData;
 
         tData.resize(cols);
@@ -418,12 +418,12 @@
         return Matrix(tData);
     }
 
-    Matrix Matrix::Inverse() const{
+    Matrix Matrix::inverse() const{
         // Ensures only valid matrixes can use this method
         if(rows != cols){
             throw std::length_error("Non-square matrixes don't have an inverse");
         }
-        if(Determinant() == 0){
+        if(determinant() == 0){
             throw std::invalid_argument("Singular matrixes (det = 0) don't have an inverse");
         }
 
@@ -468,11 +468,11 @@
                     }
                 }
                 Matrix m = Matrix(mData);
-                cData[i][j] = pow(-1,i+j) * m.Determinant();
+                cData[i][j] = pow(-1,i+j) * m.determinant();
             }
         }
 
-        Matrix inv = Matrix((1/Determinant()) * Matrix(cData).Transpose());
+        Matrix inv = Matrix((1/determinant()) * Matrix(cData).transpose());
 
         for(unsigned int i = 0; i < rows; ++i){
             for(unsigned int j = 0; j < cols; ++j){
@@ -485,7 +485,7 @@
         return inv;
     }
 
-    void Matrix::Print() const{
+    void Matrix::print() const{
         for(unsigned int i = 0; i < rows; ++i){
             for(unsigned int j = 0; j < cols; ++j){
                 std::cout << data[i][j] << " ";
@@ -495,7 +495,7 @@
     }
 
     std::ostream& operator<<(std::ostream& stream, const Matrix& matrix){
-        matrix.Print();
+        matrix.print();
         return stream;
     }
 
@@ -530,15 +530,23 @@
         }
     }
 
-    Matrix IdentityMatrix::Multiply(const Matrix& other) const{
-        if(this->cols != other.GetRows()){
+    Matrix IdentityMatrix::multiply(const Matrix& other) const{
+        if(this->cols != other.getRows()){
             throw std::length_error("dimension mismatch"); // Checks for a required condition
         }
         return other;
     }
 
-    double IdentityMatrix::Determinant() const{
+    double IdentityMatrix::determinant() const{
         return 1.0;
+    }
+
+    Matrix IdentityMatrix::transpose() const{
+        return IdentityMatrix(this->rows);
+    }
+
+    Matrix IdentityMatrix::inverse() const{
+        return IdentityMatrix(this->rows);
     }
 
     IdentityMatrix::~IdentityMatrix(){}
@@ -569,7 +577,7 @@
         }
     }
 
-    double VandermondeMatrix::Determinant() const{
+    double VandermondeMatrix::determinant() const{
         // Ensures only square matrixes can use this method
         if(rows != cols){
             throw std::length_error("non-square matrixes can't have a determinant");
